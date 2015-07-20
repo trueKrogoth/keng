@@ -34,10 +34,6 @@ template<class T, class C> TObject* __object_constructor(CObject* config, TObjec
 
 #define DEFINE_OBJECT_CONSTRUCTOR(type_index, T, C) \
 __object_constructor_indexer type##_indexer_instance(type_index, &__object_constructor<T, C>); \
-T::T(CObject* config, TObject* baseObject) : TObject(type_index, config, baseObject = 0)
-
-#define DEFINE_OBJECT_VIRTUAL_CONSTRUCTOR(type_index, T, C) \
-__object_constructor_indexer type##_indexer_instance(type_index, &__object_constructor<T, C>); \
 T::T(int typeIndex, CObject* config, TObject* baseObject) : TObject(type_index, config, baseObject = 0)
 
 }

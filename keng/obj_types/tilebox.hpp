@@ -68,8 +68,7 @@ class TTilebox : public TComponent {
                  int orderIndex = DEFAULT_ORDER_INDEX,
                  tileset_t* tileset = DEFAULT_TILESET,
                  int tilesX = DEFAULT_TILES_X,
-                 int tilesY = DEFAULT_TILES_Y,
-                 int __typeIndex = UNIQUE_OBJECT_TYPE_INDEX);
+                 int tilesY = DEFAULT_TILES_Y);
 
         void generate();
 

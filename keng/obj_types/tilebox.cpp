@@ -24,12 +24,12 @@
 using namespace Keng;
 
 TTilebox::TTilebox(TFrame* baseFrame, int orderIndex,
-                   tileset_t* tileset, int tilesX, int tilesY,
-                   int __typeIndex) : TComponent(baseFrame, orderIndex, __typeIndex)
+                   tileset_t* tileset, int tilesX, int tilesY) :
+                   TComponent(baseFrame, orderIndex)
                #if SAFE_MODE
                  , _tile(0)
                #endif
-                  {
+                 { initTypeIndex(OBJECT_TYPE_TILEBOX);
     _tileset = tileset;
 
     _tilesX = tilesX;
@@ -39,13 +39,6 @@ TTilebox::TTilebox(TFrame* baseFrame, int orderIndex,
     if (tileset != 0)
 #endif
     {
-        _cornerX = tilesX * tileset->tileWidth - Prog::displayWidth;
-        if (cornerX < 0)
-            _cornerX = 0;
-        _cornerY = tilesY * tileset->tileHeight - Prog::displayHeight;
-        if (cornerY < 0)
-            _cornerY = 0;
-
         updateClipX();
         updateClipY();
     }

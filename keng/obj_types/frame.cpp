@@ -16,13 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "dummy.hpp"
+#include "frame.hpp"
 
 using namespace Keng;
 
-TDummy::TDummy(TObject* baseObject, int orderIndex,
-               int __typeIndex) : TComponent(baseObject, orderIndex, __typeIndex) {
+TFrame::TFrame(TObject* baseObject, int orderSize,
+               int boundRight, int boundBottom, int startX, int startY) :
+               TBasis(baseObject, orderSize) {
+               initTypeIndex(OBJECT_TYPE_FRAME);
+    _boundRight = boundRight;
+    _boundBottom = boundBottom;
+
+    _x = startX;
+    _y = startY;
 }
 
-void TDummy::update() {
+void TFrame::update() {
 }

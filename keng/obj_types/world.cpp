@@ -16,18 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "background.hpp"
-#include <gl/gl.h>
+#include "world.hpp"
+#include "../main/prog.hpp"
+#include "../support/error.hpp"
 
 using namespace Keng;
 
-TBackground::TBackground(TObject* baseObject, int orderIndex,
-                         int __typeIndex) : TComponent(baseObject, orderIndex, __typeIndex) {
+TWorld::TWorld(TObject* baseObject, int orderSize, int boundRight, int boundBottom, int startX, int startY) :
+               TFrame(baseObject, orderSize, boundRight, boundBottom, startX, startY) {
+               initTypeIndex(OBJECT_TYPE_WORLD);
 }
 
-void TBackground::update() {
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(.0f, .0f, .0f, 1.0f);
+void TWorld::update() {
 }

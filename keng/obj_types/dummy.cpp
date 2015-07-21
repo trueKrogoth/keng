@@ -16,35 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KENG_OBJ_TYPES_CURSOR_HPP_INCLUDED
-#define KENG_OBJ_TYPES_CURSOR_HPP_INCLUDED
+#include "dummy.hpp"
 
-#include "../main/obj_basic_types.hpp"
-#include "sprite.hpp"
-#include "../main/obj_type_index.hpp"
+using namespace Keng;
 
-///>
-#define DEFAULT_ORDER_INDEX 0
-///<
-
-#define OBJECT_TYPE_CURSOR UNIQUE_OBJECT_TYPE_INDEX
-
-namespace Keng {
-
-class TCursor : public TComponent {
-    private:
-        TSprite* sprite;
-
-        virtual void update();
-
-    public:
-        TCursor(TFrame* baseFrame /*!= 0*/,
-                int orderIndex = DEFAULT_ORDER_INDEX,
-                int __typeIndex = UNIQUE_OBJECT_TYPE_INDEX);
-};
-
+TDummy::TDummy(TObject* baseObject, int orderIndex) :
+               TComponent(baseObject, orderIndex) {
+               initTypeIndex(OBJECT_TYPE_DUMMY);
 }
 
-#undef DEFAULT_ORDER_INDEX
-
-#endif // KENG_OBJ_TYPES_CURSOR_HPP_INCLUDED
+void TDummy::update() {
+}

@@ -19,6 +19,8 @@
 #ifndef KENG_MAIN_BASIC_TYPES_HPP_INCLUDED
 #define KENG_MAIN_BASIC_TYPES_HPP_INCLUDED
 
+#include "../support/error.hpp"
+
 namespace Keng {
 
 ///TObject
@@ -26,7 +28,6 @@ namespace Keng {
 class TObject {
     friend class TBasis;
     friend class TComponent;
-    friend void LoopUpdate(TObject*);
 
     private:
         int _typeIndex;
@@ -43,7 +44,7 @@ class TObject {
 
         virtual void update() = 0;
 
-        int _orderIndex; //performance rudiment
+        int _orderIndex; //little optimization rudiment
 
     public:
         int const& typeIndex = _typeIndex;
@@ -55,7 +56,15 @@ class TObject {
         TObject* const& baseObject = _baseObject;
         TObject* const& subObject = _subObject;
 
-        TObject(int typeIndex, bool passFlag);
+        TObject(bool passFlag);
+        inline void initTypeIndex(int typeIndex) {
+            if (_typeIndex == -1)
+                _typeIndex = typeIndex;
+        #if SAFE_MODE
+            else
+                ShowError("ERROR");
+        #endif
+        };
         virtual ~TObject();
 
         virtual void remove() = 0;
@@ -71,7 +80,7 @@ class TBasis : public TObject {
     private:
         int _orderSize;
 
-        TComponent* * orderComponent; //semantical explicitation
+        TComponent* * orderComponent;
 
         TObject* getPosition(int orderIndex);
 
@@ -80,7 +89,7 @@ class TBasis : public TObject {
     public:
         int const& orderSize = _orderSize;
 
-        TBasis(TObject* baseObject, int orderSize, int __typeIndex);
+        TBasis(TObject* baseObject, int orderSize);
         virtual ~TBasis();
 
         inline void updateAll() {loopUpdate();};
@@ -101,7 +110,7 @@ class TComponent : public TObject {
     public:
         int const& orderIndex = _orderIndex;
 
-        TComponent(TObject* baseObject /*!= 0*/, int orderIndex, int __typeIndex);
+        TComponent(TObject* baseObject /*!= 0*/, int orderIndex);
         virtual ~TComponent();
 
         void remove();

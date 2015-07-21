@@ -17,7 +17,6 @@
  */
 
 #include "obj_basic_types.hpp"
-#include "../support/error.hpp"
 #if SAFE_MODE
 #include "obj_type_index.hpp"
 #endif
@@ -26,22 +25,7 @@ using namespace Keng;
 
 ///TObject
 
-TObject::TObject(int typeIndex, bool passFlag) {
-#if SAFE_MODE
-    if (typeIndex < 0) {
-        ShowError("INPUT ERROR");
-        _typeIndex = 0;
-    }
-    else
-    if (typeIndex >= OBJECT_TYPE_COUNT) {
-        ShowError("INPUT ERROR");
-        _typeIndex = OBJECT_TYPE_COUNT - 1;
-    }
-    else
-#endif
-    _typeIndex = typeIndex;
-
-    this->_passFlag = passFlag;
+TObject::TObject(bool passFlag) : _typeIndex(-1), _passFlag(passFlag) {
 }
 
 TObject::~TObject() {
@@ -65,7 +49,7 @@ void TObject::loopDelete() {
 
 ///TBasis
 
-TBasis::TBasis(TObject* baseObject, int orderSize, int __typeIndex) : TObject(__typeIndex, false) {
+TBasis::TBasis(TObject* baseObject, int orderSize) : TObject(false) {
     _prevObject = this;
     _nextObject = this;
     _subObject = 0;
@@ -115,7 +99,7 @@ TObject* TBasis::getPosition(int orderIndex) {
 
 ///TComponent
 
-TComponent::TComponent(TObject * baseObject, int orderIndex, int __typeIndex) : TObject(__typeIndex, true) {
+TComponent::TComponent(TObject * baseObject, int orderIndex) : TObject(true) {
 #if SAFE_MODE
     if (orderIndex < 0) {
         ShowError("INPUT ERROR");
@@ -155,9 +139,7 @@ void TComponent::remove() {
 #endif
     if (static_cast<TBasis*>(baseObject)->orderComponent[orderIndex] == this) {
         if (prevObject->_orderIndex == orderIndex)
-            //^ component rudiment run-time advantage (no check whether the object is component)
             static_cast<TBasis*>(baseObject)->orderComponent[orderIndex] = static_cast<TComponent*>(prevObject);
-                //^ semantical explicitation compile-time disadvantage
         else
             static_cast<TBasis*>(baseObject)->orderComponent[orderIndex] = 0;
     }

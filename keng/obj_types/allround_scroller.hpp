@@ -16,63 +16,50 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KENG_OBJ_TYPES_WORLD_HPP_INCLUDED
-#define KENG_OBJ_TYPES_WORLD_HPP_INCLUDED
+#ifndef KENG_OBJ_TYPES_DUMMY_HPP_INCLUDED
+#define KENG_OBJ_TYPES_DUMMY_HPP_INCLUDED
 
+#include "../main/obj_basic_types.hpp"
 #include "frame.hpp"
-#include "tilebox.hpp"
 #include "../main/obj_type_index.hpp"
 
 ///>
-#define DEFAULT_ORDER_SIZE 10
+#define DEFAULT_ORDER_INDEX 0
 #define DEFAULT_SCROLL_SPEED 30
 #define DEFAULT_SCROLL_BORDER 15
-#define DEFAULT_START_X 0
-#define DEFAULT_START_Y 0
 ///<
 
-#define OBJECT_TYPE_WORLD UNIQUE_OBJECT_TYPE_INDEX
+#define OBJECT_TYPE_ALLROUND_SCROLLER UNIQUE_OBJECT_TYPE_INDEX
 
 namespace Keng {
 
-class TWorld : public TFrame {
+class TAllroundScroller : public TComponent {
     private:
         virtual void update();
 
-    protected:
-        TTilebox* _tilebox;
+        inline void scrollLeft();
+        inline void scrollRight();
+        inline void scrollUp();
+        inline void scrollDown();
 
+    protected:
         int _scrollSpeed;
         int _scrollBorder;
 
     public:
-        TTilebox* const& tilebox = _tilebox;
-
         int const& scrollSpeed = _scrollSpeed;
         int const& scrollBorder = _scrollBorder;
 
-        TWorld(TObject* baseObject = 0,
-               int orderSize = DEFAULT_ORDER_SIZE,
-               int scrollSpeed = DEFAULT_SCROLL_SPEED,
-               int scrollBorder = DEFAULT_SCROLL_BORDER,
-               int startX = DEFAULT_START_X,
-               int startY = DEFAULT_START_Y,
-               int __typeIndex = UNIQUE_OBJECT_TYPE_INDEX);
-
-        void setTilebox(TTilebox* tilebox) {_tilebox = tilebox;};
-
-        void scrollLeft();
-        void scrollRight();
-        void scrollUp();
-        void scrollDown();
+        TAllroundScroller(TFrame* baseFrame /*!= 0*/,
+                          int orderIndex = DEFAULT_ORDER_INDEX,
+                          int scrollSpeed = DEFAULT_SCROLL_SPEED,
+                          int scrollBorder = DEFAULT_SCROLL_BORDER);
 };
 
 }
 
-#undef DEFAULT_ORDER_SIZE
+#undef DEFAULT_ORDER_INDEX
 #undef DEFAULT_SCROLL_SPEED
 #undef DEFAULT_SCROLL_BORDER
-#undef DEFAULT_START_X
-#undef DEFAULT_START_Y
 
-#endif // KENG_OBJ_TYPES_WORLD_HPP_INCLUDED
+#endif // KENG_OBJ_TYPES_DUMMY_HPP_INCLUDED

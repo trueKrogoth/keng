@@ -16,16 +16,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "frame.hpp"
+#include "sprite.hpp"
+#include "../support/graphics.hpp"
+#include "../support/error.hpp"
 
 using namespace Keng;
 
-TFrame::TFrame(TObject* baseObject, int orderSize,
-               int startX, int startY,
-               int __typeIndex) : TBasis(baseObject, orderSize, __typeIndex) {
+TSprite::TSprite(TFrame* baseFrame, int orderIndex,
+                 spriteset_t* spriteset, int startX, int startY) :
+                 TComponent(baseFrame, orderIndex)
+             #if SAFE_MODE
+               , column(0), row(0), scale(1.0f), mirrorX(false), mirrorY(false)
+             #endif
+               { initTypeIndex(OBJECT_TYPE_SPRITE);
+    _spriteset = spriteset;
+
     _x = startX;
     _y = startY;
 }
 
-void TFrame::update() {
+void TSprite::update() {
+    glLoadIdentity();
+    glTranslatef(x - static_cast<TFrame*>(baseObject)->x, y - static_cast<TFrame*>(baseObject)->y, .0f);
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    DrawSprite(spriteset, column, row, scale, mirrorX, mirrorY);
 }

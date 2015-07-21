@@ -16,32 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KENG_OBJ_TYPES_DUMMY_HPP_INCLUDED
-#define KENG_OBJ_TYPES_DUMMY_HPP_INCLUDED
+#include "background.hpp"
+#include <gl/gl.h>
 
-#include "../main/obj_basic_types.hpp"
-#include "../main/obj_type_index.hpp"
+using namespace Keng;
 
-///>
-#define DEFAULT_ORDER_INDEX 0
-///<
-
-#define OBJECT_TYPE_DUMMY UNIQUE_OBJECT_TYPE_INDEX
-
-namespace Keng {
-
-class TDummy : public TComponent {
-    private:
-        virtual void update();
-
-    public:
-        TDummy(TObject* baseObject /*!= 0*/,
-               int orderIndex = DEFAULT_ORDER_INDEX,
-               int __typeIndex = UNIQUE_OBJECT_TYPE_INDEX);
-};
-
+TBackground::TBackground(TObject* baseObject, int orderIndex) :
+                         TComponent(baseObject, orderIndex) {
+                         initTypeIndex(OBJECT_TYPE_BACKGROUND);
 }
 
-#undef DEFAULT_ORDER_INDEX
-
-#endif // KENG_OBJ_TYPES_DUMMY_HPP_INCLUDED
+void TBackground::update() {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(.0f, .0f, .0f, 1.0f);
+}

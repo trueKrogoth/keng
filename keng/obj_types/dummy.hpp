@@ -16,16 +16,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "cursor.hpp"
-#include "../main/prog.hpp"
+#ifndef KENG_OBJ_TYPES_DUMMY_HPP_INCLUDED
+#define KENG_OBJ_TYPES_DUMMY_HPP_INCLUDED
 
-using namespace Keng;
+#include "../main/obj_basic_types.hpp"
+#include "../main/obj_type_index.hpp"
 
-TCursor::TCursor(TFrame* baseFrame, int orderIndex,
-                 int __typeIndex) : TComponent(baseFrame, orderIndex, __typeIndex) {
-    sprite = new TSprite(static_cast<TFrame*>(baseFrame), 1, new spriteset_t("cursor.spr"));
+///>
+#define DEFAULT_ORDER_INDEX 0
+///<
+
+#define OBJECT_TYPE_DUMMY UNIQUE_OBJECT_TYPE_INDEX
+
+namespace Keng {
+
+class TDummy : public TComponent {
+    private:
+        virtual void update();
+
+    public:
+        TDummy(TObject* baseObject /*!= 0*/,
+               int orderIndex = DEFAULT_ORDER_INDEX);
+};
+
 }
 
-void TCursor::update() {
-    sprite->setCoords(Prog::mouseX, Prog::mouseY);
-}
+#undef DEFAULT_ORDER_INDEX
+
+#endif // KENG_OBJ_TYPES_DUMMY_HPP_INCLUDED

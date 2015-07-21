@@ -16,45 +16,62 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KENG_OBJ_TYPES_FRAME_HPP_INCLUDED
-#define KENG_OBJ_TYPES_FRAME_HPP_INCLUDED
+#ifndef KENG_OBJ_TYPES_SPRITE_HPP_INCLUDED
+#define KENG_OBJ_TYPES_SPRITE_HPP_INCLUDED
 
 #include "../main/obj_basic_types.hpp"
+#include "frame.hpp"
 #include "../main/obj_type_index.hpp"
+#include "../support/spriteset.hpp"
 
 ///>
-#define DEFAULT_ORDER_SIZE 10
+#define DEFAULT_ORDER_INDEX 0
+#define DEFAULT_SPRITESET new spriteset_t("cursor.spr")
 #define DEFAULT_START_X 0
 #define DEFAULT_START_Y 0
 ///<
 
-#define OBJECT_TYPE_FRAME UNIQUE_OBJECT_TYPE_INDEX
+#define OBJECT_TYPE_SPRITE UNIQUE_OBJECT_TYPE_INDEX
 
 namespace Keng {
 
-class TFrame : public TBasis {
+class TSprite : public TComponent {
     private:
         virtual void update();
 
     protected:
+        spriteset_t* _spriteset;
+
         int _x;
         int _y;
 
+        int column;
+        int row;
+        float scale;
+        bool mirrorX;
+        bool mirrorY;
+
     public:
+        spriteset_t* const& spriteset = _spriteset;
+
         int const& x = _x;
         int const& y = _y;
 
-        TFrame(TObject* baseObject = 0,
-               int orderSize = DEFAULT_ORDER_SIZE,
-               int startX = DEFAULT_START_X,
-               int startY = DEFAULT_START_Y,
-               int __typeIndex = UNIQUE_OBJECT_TYPE_INDEX);
+        TSprite(TFrame* baseFrame /*!= 0*/,
+                int orderIndex = DEFAULT_ORDER_INDEX,
+                spriteset_t* spriteset = DEFAULT_SPRITESET,
+                int startX = DEFAULT_START_X,
+                int startY = DEFAULT_START_Y);
+
+        inline void setSpriteset(spriteset_t* spriteset) {_spriteset = spriteset;};
+        inline void setCoords(int x, int y) {_x = x; _y = y;};
 };
 
 }
 
-#undef DEFAULT_ORDER_SIZE
+#undef DEFAULT_ORDER_INDEX
+#undef DEFAULT_SPRITESET
 #undef DEFAULT_START_X
 #undef DEFAULT_START_Y
 
-#endif // KENG_OBJ_TYPES_FRAME_HPP_INCLUDED
+#endif // KENG_OBJ_TYPES_SPRITE_HPP_INCLUDED

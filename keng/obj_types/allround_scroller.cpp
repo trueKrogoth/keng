@@ -21,7 +21,7 @@
 
 using namespace Keng;
 
-TAllroundScroller::TAllroundScroller(TFrame* baseFrame, int orderIndex,
+TAllroundScroller::TAllroundScroller(TFrame* baseFrame, unsigned orderIndex,
                                      int scrollSpeed, int scrollBorder) :
                                      TComponent(baseFrame, orderIndex) {
                                      initTypeIndex(OBJECT_TYPE_ALLROUND_SCROLLER);
@@ -41,32 +41,4 @@ void TAllroundScroller::update() {
     else
     if (Prog::mouseY > Prog::displayHeight - scrollBorder)
         scrollDown();
-}
-
-void TAllroundScroller::scrollLeft() {
-    if (static_cast<TFrame*>(baseObject)->x < scrollSpeed)
-        static_cast<TFrame*>(baseObject)->setX(0);
-    else
-        static_cast<TFrame*>(baseObject)->setX(static_cast<TFrame*>(baseObject)->x - scrollSpeed);
-}
-
-void TAllroundScroller::scrollRight() {
-    if (static_cast<TFrame*>(baseObject)->x + scrollSpeed > static_cast<TFrame*>(baseObject)->boundRight)
-        static_cast<TFrame*>(baseObject)->setX(static_cast<TFrame*>(baseObject)->boundRight);
-    else
-        static_cast<TFrame*>(baseObject)->setX(static_cast<TFrame*>(baseObject)->x + scrollSpeed);
-}
-
-void TAllroundScroller::scrollUp() {
-    if (static_cast<TFrame*>(baseObject)->y < scrollSpeed)
-        static_cast<TFrame*>(baseObject)->setY(0);
-    else
-        static_cast<TFrame*>(baseObject)->setY(static_cast<TFrame*>(baseObject)->y - scrollSpeed);
-}
-
-void TAllroundScroller::scrollDown() {
-    if (static_cast<TFrame*>(baseObject)->y + scrollSpeed > static_cast<TFrame*>(baseObject)->boundBottom)
-        static_cast<TFrame*>(baseObject)->setY(static_cast<TFrame*>(baseObject)->boundBottom);
-    else
-        static_cast<TFrame*>(baseObject)->setY(static_cast<TFrame*>(baseObject)->y + scrollSpeed);
 }

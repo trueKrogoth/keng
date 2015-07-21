@@ -47,38 +47,28 @@ class TWorld : public TFrame {
         TTilebox* const& tilebox = _tilebox;
 
         TWorld(TObject* baseObject = 0,
-               int orderSize = DEFAULT_ORDER_SIZE,
+               unsigned orderSize = DEFAULT_ORDER_SIZE,
                int boundRight = DEFAULT_BOUND_RIGHT,
                int boundBottom = DEFAULT_BOUND_BOTTOM,
                int startX = DEFAULT_START_X,
                int startY = DEFAULT_START_Y);
 
-        virtual void setTilebox(TTilebox* tilebox) {
-            _tilebox = tilebox;
+        void setTilebox(TTilebox* tilebox);
 
-            _boundRight = tilebox->tilesX * tilebox->tileset->tileWidth - Prog::displayWidth;
-            if (boundRight < 0)
-                _boundRight = 0;
-            _boundBottom = tilebox->tilesY * tilebox->tileset->tileHeight - Prog::displayHeight;
-            if (boundBottom < 0)
-                _boundBottom = 0;
-        };
-
-        virtual void setX(int x) {
-            _x = x;
-        #if SAFE_MODE
-            if (tilebox != 0)
-        #endif
-            tilebox->updateClipX();
-        };
-        virtual void setY(int y) {
-            _y = y;
-        #if SAFE_MODE
-            if (tilebox != 0)
-        #endif
-            tilebox->updateClipY();
-        };
+        virtual void setX(int x);
+        virtual void setY(int y);
 };
+
+inline void TWorld::setTilebox(TTilebox* tilebox) {
+    _tilebox = tilebox;
+
+    _boundRight = tilebox->tilesX * tilebox->tileset->tileWidth - Prog::displayWidth;
+    if (boundRight < 0)
+        _boundRight = 0;
+    _boundBottom = tilebox->tilesY * tilebox->tileset->tileHeight - Prog::displayHeight;
+    if (boundBottom < 0)
+        _boundBottom = 0;
+}
 
 }
 

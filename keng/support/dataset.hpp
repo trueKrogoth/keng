@@ -16,19 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "background.hpp"
-#include <gl/gl.h>
+#ifndef KENG_SUPPORT_DATASET_HPP_INCLUDED
+#define KENG_SUPPORT_DATASET_HPP_INCLUDED
 
-using namespace Keng;
+#include <map>
+#include <string>
 
-TBackground::TBackground(TObject* baseObject, unsigned orderIndex) :
-                         TComponent(baseObject, orderIndex) {
-                         initTypeIndex(OBJECT_TYPE_BACKGROUND);
+template<class T>
+class dataset_t {
+    private:
+        static std::map<std::string, void*> _map;
+
+    public:
+        static inline T* file(const char* filename);
+};
+
+template<class T>
+std::map<std::string, void*> dataset_t<T>::_map;
+
+template<class T>
+T* dataset_t<T>::file(const char* filename) {
+    std::map<std::string, void*>::const_iterator dataset = _map.find(filename);
+    if (dataset == _map.end())
+        return new T(filename);
+    else
+        return static_cast<T*>(dataset->second);
 }
 
-void TBackground::update() {
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(.0f, .0f, .0f, 1.0f);
-}
+template<class T>
+using Dataset = dataset_t<T>;
+
+#endif // KENG_SUPPORT_DATASET_HPP_INCLUDED

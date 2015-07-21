@@ -39,7 +39,7 @@ class TCursor : public TComponent {
 
     public:
         TCursor(TFrame* baseFrame /*!= 0*/,
-                int orderIndex = DEFAULT_ORDER_INDEX);
+                unsigned orderIndex = DEFAULT_ORDER_INDEX);
 };
 
 }

@@ -21,6 +21,6 @@
 
 #define SAFE_MODE 1
 
-#define ShowError(message) int dummy
+#define ShowMessage(text)
 
 #endif // KENG_SUPPORT_ERROR_HPP_INCLUDED

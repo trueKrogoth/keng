@@ -20,7 +20,7 @@
 
 using namespace Keng;
 
-TDummy::TDummy(TObject* baseObject, int orderIndex) :
+TDummy::TDummy(TObject* baseObject, unsigned orderIndex) :
                TComponent(baseObject, orderIndex) {
                initTypeIndex(OBJECT_TYPE_DUMMY);
 }

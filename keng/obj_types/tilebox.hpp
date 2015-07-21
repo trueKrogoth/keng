@@ -26,7 +26,7 @@
 
 ///>
 #define DEFAULT_ORDER_INDEX 0
-#define DEFAULT_TILESET new tileset_t("barrens.tls")
+#define DEFAULT_TILESET Tileset::file("barrens.tls")
 #define DEFAULT_TILES_X 100
 #define DEFAULT_TILES_Y 100
 ///<
@@ -39,42 +39,51 @@ class TTilebox : public TComponent {
     private:
         tileset_t* _tileset;
 
-        int _tilesX;
-        int _tilesY;
+        unsigned _tilesX;
+        unsigned _tilesY;
 
-        int _cornerX;
-        int _cornerY;
+        unsigned ** _tile;
 
-        int ** _tile;
-
-        int leftClip;
-        int rightClip;
-        int topClip;
-        int bottomClip;
+        unsigned leftClip;
+        unsigned rightClip;
+        unsigned topClip;
+        unsigned bottomClip;
 
         virtual void update();
 
     public:
         tileset_t* const& tileset = _tileset;
-        int const& tilesX = _tilesX;
-        int const& tilesY = _tilesY;
 
-        int const& cornerX = _cornerX;
-        int const& cornerY = _cornerY;
+        unsigned const& tilesX = _tilesX;
+        unsigned const& tilesY = _tilesY;
 
-        int ** const& tile = _tile;
+        unsigned ** const& tile = _tile;
 
         TTilebox(TFrame* baseFrame /*!= 0*/,
-                 int orderIndex = DEFAULT_ORDER_INDEX,
+                 unsigned orderIndex = DEFAULT_ORDER_INDEX,
                  tileset_t* tileset = DEFAULT_TILESET,
-                 int tilesX = DEFAULT_TILES_X,
-                 int tilesY = DEFAULT_TILES_Y);
+                 unsigned tilesX = DEFAULT_TILES_X,
+                 unsigned tilesY = DEFAULT_TILES_Y);
 
         void generate();
 
         void updateClipX();
         void updateClipY();
 };
+
+inline void TTilebox::updateClipX() {
+    leftClip = static_cast<TFrame*>(baseObject)->x * tileset->tileInverseWidth;
+    rightClip = leftClip + tileset->clipTilesX;
+    if (rightClip > tilesX)
+        rightClip = tilesX;
+}
+
+inline void TTilebox::updateClipY() {
+    topClip = static_cast<TFrame*>(baseObject)->y * tileset->tileInverseHeight;
+    bottomClip = topClip + tileset->clipTilesY;
+    if (bottomClip > tilesY)
+        bottomClip = tilesY;
+}
 
 }
 

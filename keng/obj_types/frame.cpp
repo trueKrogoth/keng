@@ -20,7 +20,7 @@
 
 using namespace Keng;
 
-TFrame::TFrame(TObject* baseObject, int orderSize,
+TFrame::TFrame(TObject* baseObject, unsigned orderSize,
                int boundRight, int boundBottom, int startX, int startY) :
                TBasis(baseObject, orderSize) {
                initTypeIndex(OBJECT_TYPE_FRAME);
@@ -32,4 +32,12 @@ TFrame::TFrame(TObject* baseObject, int orderSize,
 }
 
 void TFrame::update() {
+}
+
+void TFrame::setX(int x) {
+    _x = x;
+}
+
+void TFrame::setY(int y) {
+    _y = y;
 }

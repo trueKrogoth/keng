@@ -22,10 +22,26 @@
 
 using namespace Keng;
 
-TWorld::TWorld(TObject* baseObject, int orderSize, int boundRight, int boundBottom, int startX, int startY) :
+TWorld::TWorld(TObject* baseObject, unsigned orderSize, int boundRight, int boundBottom, int startX, int startY) :
                TFrame(baseObject, orderSize, boundRight, boundBottom, startX, startY) {
                initTypeIndex(OBJECT_TYPE_WORLD);
 }
 
 void TWorld::update() {
+}
+
+void TWorld::setX(int x) {
+    _x = x;
+#if SAFE_MODE
+    if (tilebox != 0)
+#endif
+    tilebox->updateClipX();
+}
+
+void TWorld::setY(int y) {
+    _y = y;
+#if SAFE_MODE
+    if (tilebox != 0)
+#endif
+    tilebox->updateClipY();
 }

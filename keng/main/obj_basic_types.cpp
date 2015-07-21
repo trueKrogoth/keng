@@ -17,9 +17,7 @@
  */
 
 #include "obj_basic_types.hpp"
-#if SAFE_MODE
 #include "obj_type_index.hpp"
-#endif
 
 using namespace Keng;
 
@@ -33,23 +31,9 @@ TObject::~TObject() {
         subObject->loopDelete();
 }
 
-void TObject::loopUpdate() {
-    update();
-    if (subObject != 0)
-        subObject->loopUpdate();
-    if (nextObject->passFlag)
-        nextObject->loopUpdate();
-}
-
-void TObject::loopDelete() {
-    if (nextObject->passFlag)
-        nextObject->loopDelete();
-    delete this;
-}
-
 ///TBasis
 
-TBasis::TBasis(TObject* baseObject, int orderSize) : TObject(false) {
+TBasis::TBasis(TObject* baseObject, unsigned orderSize) : TObject(false) {
     _prevObject = this;
     _nextObject = this;
     _subObject = 0;
@@ -59,13 +43,6 @@ TBasis::TBasis(TObject* baseObject, int orderSize) : TObject(false) {
 
     _orderIndex = -1;
 
-#if SAFE_MODE
-    if (orderSize < 0) {
-        ShowError("INPUT ERROR");
-        _orderSize = orderSize;
-    }
-    else
-#endif
     _orderSize = orderSize;
 
     orderComponent = new TComponent*[orderSize];
@@ -82,10 +59,10 @@ void TBasis::remove() {
     loopDelete();
 }
 
-TObject* TBasis::getPosition(int orderIndex) {
+TObject* TBasis::getPosition(unsigned orderIndex) {
 #if SAFE_MODE
     if (orderIndex >= orderSize) {
-        ShowError("ERROR");
+        ShowMessage("ERROR! An object has too high order index.");
         orderIndex = orderSize - 1;
     }
 #endif
@@ -99,19 +76,13 @@ TObject* TBasis::getPosition(int orderIndex) {
 
 ///TComponent
 
-TComponent::TComponent(TObject * baseObject, int orderIndex) : TObject(true) {
-#if SAFE_MODE
-    if (orderIndex < 0) {
-        ShowError("INPUT ERROR");
-        _orderIndex = 0;
-    }
-    else
-#endif
+TComponent::TComponent(TObject * baseObject, unsigned orderIndex) : TObject(true) {
     _orderIndex = orderIndex;
 
     this->_baseObject = baseObject;
 #if SAFE_MODE
     if (baseObject == 0) {
+        ShowMessage("WARNING! Created a component with no basis.");
         _prevObject = this;
         _nextObject = this;
     }

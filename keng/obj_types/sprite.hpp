@@ -26,7 +26,7 @@
 
 ///>
 #define DEFAULT_ORDER_INDEX 0
-#define DEFAULT_SPRITESET new spriteset_t("cursor.spr")
+#define DEFAULT_SPRITESET Spriteset::file("cursor.spr")
 #define DEFAULT_START_X 0
 #define DEFAULT_START_Y 0
 ///<
@@ -45,8 +45,8 @@ class TSprite : public TComponent {
         int _x;
         int _y;
 
-        int column;
-        int row;
+        unsigned column;
+        unsigned row;
         float scale;
         bool mirrorX;
         bool mirrorY;
@@ -58,14 +58,23 @@ class TSprite : public TComponent {
         int const& y = _y;
 
         TSprite(TFrame* baseFrame /*!= 0*/,
-                int orderIndex = DEFAULT_ORDER_INDEX,
+                unsigned orderIndex = DEFAULT_ORDER_INDEX,
                 spriteset_t* spriteset = DEFAULT_SPRITESET,
                 int startX = DEFAULT_START_X,
                 int startY = DEFAULT_START_Y);
 
-        inline void setSpriteset(spriteset_t* spriteset) {_spriteset = spriteset;};
-        inline void setCoords(int x, int y) {_x = x; _y = y;};
+        void setSpriteset(spriteset_t* spriteset);
+        void setCoords(int x, int y);
 };
+
+inline void TSprite::setSpriteset(spriteset_t* spriteset) {
+    _spriteset = spriteset;
+}
+
+inline void TSprite::setCoords(int x, int y) {
+    _x = x;
+    _y = y;
+}
 
 }
 

@@ -23,8 +23,8 @@
 
 using namespace Keng;
 
-TTilebox::TTilebox(TFrame* baseFrame, int orderIndex,
-                   tileset_t* tileset, int tilesX, int tilesY) :
+TTilebox::TTilebox(TFrame* baseFrame, unsigned orderIndex,
+                   tileset_t* tileset, unsigned tilesX, unsigned tilesY) :
                    TComponent(baseFrame, orderIndex)
                #if SAFE_MODE
                  , _tile(0)
@@ -36,7 +36,9 @@ TTilebox::TTilebox(TFrame* baseFrame, int orderIndex,
     _tilesY = tilesY;
 
 #if SAFE_MODE
-    if (tileset != 0)
+    if (tileset == 0)
+        ShowMessage("WARNING! Created tilebox with no tileset.");
+    else
 #endif
     {
         updateClipX();
@@ -49,17 +51,15 @@ TTilebox::TTilebox(TFrame* baseFrame, int orderIndex,
 }
 
 void TTilebox::generate() {
-#if SAFE_MODE
     if (tile != 0) {
-        for (int i = 0; i != tilesY; i++)
+        for (unsigned i = 0; i != tilesY; i++)
             delete[] tile[i];
         delete[] tile;
     }
-#endif
-    _tile = new int *[tilesY];
-    for (int i = 0; i != tilesY; i++) {
-        _tile[i] = new int[tilesX];
-        for (int j = 0; j != tilesX; j++)
+    _tile = new unsigned *[tilesY];
+    for (unsigned i = 0; i != tilesY; i++) {
+        _tile[i] = new unsigned[tilesX];
+        for (unsigned j = 0; j != tilesX; j++)
             _tile[i][j] = rand() % tileset->types;
     }
 }
@@ -67,29 +67,17 @@ void TTilebox::generate() {
 void TTilebox::update() {
     glLoadIdentity();
     glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    glTranslatef(leftClip * tileset->tileWidth - static_cast<TFrame*>(baseObject)->x,
-                 topClip * tileset->tileHeight - static_cast<TFrame*>(baseObject)->y, .0f);
-    for (int i = topClip; i != bottomClip; i++) {
+    TFrame* frame = (TFrame*)(baseObject);
+    leftClip = 0;
+    glTranslatef(static_cast<int>(leftClip) * tileset->tileWidth - static_cast<TFrame*>(baseObject)->x,
+                 static_cast<int>(topClip) * tileset->tileHeight - static_cast<TFrame*>(baseObject)->y, .0f);
+    for (unsigned i = topClip; i != bottomClip; i++) {
         glPushMatrix();
-        for (int j = leftClip; j != rightClip; j++) {
+        for (unsigned j = leftClip; j != rightClip; j++) {
             DrawSprite(tileset->spriteset, tile[i][j]);
             glTranslatef(tileset->tileWidth, .0f, .0f);
         }
         glPopMatrix();
         glTranslatef(.0f, tileset->tileHeight, .0f);
     }
-}
-
-void TTilebox::updateClipX() {
-    leftClip = static_cast<TFrame*>(baseObject)->x * tileset->tileInverseWidth;
-    rightClip = leftClip + tileset->clipTilesX;
-    if (rightClip > tilesX)
-        rightClip = tilesX;
-}
-
-void TTilebox::updateClipY() {
-    topClip = static_cast<TFrame*>(baseObject)->y * tileset->tileInverseHeight;
-    bottomClip = topClip + tileset->clipTilesY;
-    if (bottomClip > tilesY)
-        bottomClip = tilesY;
 }

@@ -36,7 +36,7 @@ class TBackground : public TComponent {
 
     public:
         TBackground(TObject* baseObject /*!= 0*/,
-                    int orderIndex = DEFAULT_ORDER_INDEX);
+                    unsigned orderIndex = DEFAULT_ORDER_INDEX);
 };
 
 }

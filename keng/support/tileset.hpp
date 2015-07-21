@@ -19,24 +19,26 @@
 #ifndef KENG_SUPPORT_TILESET_HPP_INCLUDED
 #define KENG_SUPPORT_TILESET_HPP_INCLUDED
 
+#include "dataset.hpp"
 #include "spriteset.hpp"
 
 ///>
 #define TILES_PATH "tiles/"
 ///<
 
-class tileset_t {
-    int _types;
+class tileset_t : public dataset_t<tileset_t> {
+    private:
+        int _types;
 
-    int _tileWidth;
-    int _tileHeight;
-    float _tileInverseWidth;
-    float _tileInverseHeight;
+        int _tileWidth;
+        int _tileHeight;
+        float _tileInverseWidth;
+        float _tileInverseHeight;
 
-    int _clipTilesX;
-    int _clipTilesY;
+        int _clipTilesX;
+        int _clipTilesY;
 
-    spriteset_t* _spriteset;
+        spriteset_t* _spriteset;
 
     public:
         int const& types = _types;
@@ -51,7 +53,9 @@ class tileset_t {
 
         spriteset_t* const& spriteset = _spriteset;
 
-        tileset_t(const char* filename = "");
+        tileset_t(const char* filename);
 };
+
+typedef tileset_t Tileset;
 
 #endif // KENG_SUPPORT_TILESET_HPP_INCLUDED

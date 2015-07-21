@@ -36,7 +36,7 @@ class TDummy : public TComponent {
 
     public:
         TDummy(TObject* baseObject /*!= 0*/,
-               int orderIndex = DEFAULT_ORDER_INDEX);
+               unsigned orderIndex = DEFAULT_ORDER_INDEX);
 };
 
 }

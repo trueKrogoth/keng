@@ -19,19 +19,21 @@
 #ifndef KENG_SUPPORT_SPRITESET_HPP_INCLUDED
 #define KENG_SUPPORT_SPRITESET_HPP_INCLUDED
 
+#include "dataset.hpp"
 #include <gl/gl.h>
 
 ///>
-#define SPRITES_PATH "sprites\\"
+#define SPRITES_PATH "sprites/"
 ///<
 
 #define ANIMATION_TYPES_COUNT 1
 
 class spritegroup_t {
-    int _x;
-    int _y;
-    int _frames;
-    bool _vertical;
+    private:
+        int _x;
+        int _y;
+        int _frames;
+        bool _vertical;
 
     public:
         int const& x = _x;
@@ -42,20 +44,21 @@ class spritegroup_t {
         spritegroup_t();
 };
 
-class spriteset_t {
-    GLuint _texture;
-    int _textureWidth;
-    int _textureHeight;
+class spriteset_t : public dataset_t<spriteset_t> {
+    private:
+        GLuint _texture;
+        int _textureWidth;
+        int _textureHeight;
 
-    int _spritesX;
-    int _spritesY;
+        int _spritesX;
+        int _spritesY;
 
-    int _spriteWidth;
-    int _spriteHeight;
-    GLfloat _spriteNormedWidth;
-    GLfloat _spriteNormedHeight;
+        int _spriteWidth;
+        int _spriteHeight;
+        GLfloat _spriteNormedWidth;
+        GLfloat _spriteNormedHeight;
 
-    spritegroup_t* _animationGroup[ANIMATION_TYPES_COUNT];
+        spritegroup_t* _animationGroup[ANIMATION_TYPES_COUNT];
 
     public:
         GLuint const& texture = _texture;
@@ -74,5 +77,7 @@ class spriteset_t {
 
         spriteset_t(const char* filename);
 };
+
+typedef spriteset_t Spriteset;
 
 #endif // KENG_SUPPORT_SPRITESET_HPP_INCLUDED

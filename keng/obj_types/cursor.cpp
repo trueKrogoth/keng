@@ -21,10 +21,10 @@
 
 using namespace Keng;
 
-TCursor::TCursor(TFrame* baseFrame, int orderIndex) :
+TCursor::TCursor(TFrame* baseFrame, unsigned orderIndex) :
                  TComponent(baseFrame, orderIndex) {
                  initTypeIndex(OBJECT_TYPE_FRAME);
-    sprite = new TSprite(static_cast<TFrame*>(baseFrame), 1, new spriteset_t("cursor.spr"));
+    sprite = new TSprite(static_cast<TFrame*>(baseFrame), 1, Spriteset::file("cursor.spr"));
 }
 
 void TCursor::update() {

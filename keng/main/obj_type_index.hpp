@@ -18,6 +18,7 @@
 
 #ifndef KENG_MAIN_TYPE_INDEX_HPP_INCLUDED
 #define KENG_MAIN_TYPE_INDEX_HPP_INCLUDED
+
     #include <boost/preprocessor/arithmetic/inc.hpp>
     #include <boost/preprocessor/slot/slot.hpp>
 
@@ -27,8 +28,11 @@
 
     #define UNIQUE_OBJECT_TYPE_INDEX BOOST_PP_SLOT(1)
     #define OBJECT_TYPE_COUNT BOOST_PP_SLOT(1)
+
 #else
+
     #define BOOST_PP_VALUE BOOST_PP_INC(BOOST_PP_SLOT(1))
     #include BOOST_PP_ASSIGN_SLOT(1)
     #undef BOOST_PP_VALUE
+
 #endif

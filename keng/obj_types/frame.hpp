@@ -53,14 +53,14 @@ class TFrame : public TBasis {
         int const& y = _y;
 
         TFrame(TObject* baseObject = 0,
-               int orderSize = DEFAULT_ORDER_SIZE,
+               unsigned orderSize = DEFAULT_ORDER_SIZE,
                int boundRight = DEFAULT_BOUND_RIGHT,
                int boundBottom = DEFAULT_BOUND_BOTTOM,
                int startX = DEFAULT_START_X,
                int startY = DEFAULT_START_Y);
 
-        virtual void setX(int x) {_x = x;};
-        virtual void setY(int y) {_y = y;};
+        virtual void setX(int x);
+        virtual void setY(int y);
 };
 
 }

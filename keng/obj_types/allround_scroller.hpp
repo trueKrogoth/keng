@@ -37,10 +37,10 @@ class TAllroundScroller : public TComponent {
     private:
         virtual void update();
 
-        inline void scrollLeft();
-        inline void scrollRight();
-        inline void scrollUp();
-        inline void scrollDown();
+        void scrollLeft();
+        void scrollRight();
+        void scrollUp();
+        void scrollDown();
 
     protected:
         int _scrollSpeed;
@@ -51,10 +51,38 @@ class TAllroundScroller : public TComponent {
         int const& scrollBorder = _scrollBorder;
 
         TAllroundScroller(TFrame* baseFrame /*!= 0*/,
-                          int orderIndex = DEFAULT_ORDER_INDEX,
+                          unsigned orderIndex = DEFAULT_ORDER_INDEX,
                           int scrollSpeed = DEFAULT_SCROLL_SPEED,
                           int scrollBorder = DEFAULT_SCROLL_BORDER);
 };
+
+inline void TAllroundScroller::scrollLeft() {
+    if (static_cast<TFrame*>(baseObject)->x < scrollSpeed)
+        static_cast<TFrame*>(baseObject)->setX(0);
+    else
+        static_cast<TFrame*>(baseObject)->setX(static_cast<TFrame*>(baseObject)->x - scrollSpeed);
+}
+
+inline void TAllroundScroller::scrollRight() {
+    if (static_cast<TFrame*>(baseObject)->x + scrollSpeed > static_cast<TFrame*>(baseObject)->boundRight)
+        static_cast<TFrame*>(baseObject)->setX(static_cast<TFrame*>(baseObject)->boundRight);
+    else
+        static_cast<TFrame*>(baseObject)->setX(static_cast<TFrame*>(baseObject)->x + scrollSpeed);
+}
+
+inline void TAllroundScroller::scrollUp() {
+    if (static_cast<TFrame*>(baseObject)->y < scrollSpeed)
+        static_cast<TFrame*>(baseObject)->setY(0);
+    else
+        static_cast<TFrame*>(baseObject)->setY(static_cast<TFrame*>(baseObject)->y - scrollSpeed);
+}
+
+inline void TAllroundScroller::scrollDown() {
+    if (static_cast<TFrame*>(baseObject)->y + scrollSpeed > static_cast<TFrame*>(baseObject)->boundBottom)
+        static_cast<TFrame*>(baseObject)->setY(static_cast<TFrame*>(baseObject)->boundBottom);
+    else
+        static_cast<TFrame*>(baseObject)->setY(static_cast<TFrame*>(baseObject)->y + scrollSpeed);
+}
 
 }
 

@@ -18,15 +18,14 @@
 
 #include <windowsx.h>
 #include "prog.hpp"
-#include "../obj_cfgs.hpp"
 
 using namespace Keng;
 
 const char* Prog::_name;
 const char* Prog::_title;
-unsigned int Prog::_frameTime;
-BYTE Prog::colorBits;
-BYTE Prog::zBufferBits;
+unsigned Prog::_frameTime;
+unsigned char Prog::_colorBits;
+unsigned char Prog::_zBufferBits;
 
 int Prog::_displayWidth;
 int Prog::_displayHeight;
@@ -109,74 +108,4 @@ LRESULT CALLBACK Prog::proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
         default:
             return DefWindowProc(hwnd, message, wParam, lParam);
     }
-}
-
-void Prog::init(const char* name, const char* title, unsigned int frameTime, BYTE colorBits, BYTE zBufferBits) {
-    Prog::_name = name;
-    Prog::_title = title;
-    Prog::_frameTime = frameTime;
-    Prog::colorBits = colorBits;
-    Prog::zBufferBits = zBufferBits;
-
-    RECT rect;
-    GetWindowRect(GetDesktopWindow(), &rect);
-    _displayWidth = rect.right;
-    _displayHeight = rect.bottom;
-    _displayAspectRatio = (float) displayWidth / displayHeight;
-    _displayCenterX = displayWidth * 0.5f;
-    _displayCenterY = displayHeight * 0.5f;
-}
-
-int WINAPI Prog::main(HINSTANCE hThisInstance,
-                      HINSTANCE hPrevInstance,
-                      LPSTR lpszArgument,
-                      int nCmdShow) {
-    MSG messages;
-    WNDCLASSEX wincl;
-    DEVMODE dmScreenSettings;
-
-    memset(&dmScreenSettings, 0, sizeof(dmScreenSettings));
-    dmScreenSettings.dmSize = sizeof(dmScreenSettings);
-    dmScreenSettings.dmPelsWidth = displayWidth;
-    dmScreenSettings.dmPelsHeight = displayHeight;
-    dmScreenSettings.dmBitsPerPel = colorBits;
-    dmScreenSettings.dmFields = DM_BITSPERPEL | DM_PELSWIDTH | DM_PELSHEIGHT;
-    wincl.hInstance = hThisInstance;
-    wincl.lpszClassName = name;
-    wincl.lpfnWndProc = proc;
-    wincl.style = CS_DBLCLKS;
-    wincl.cbSize = sizeof(WNDCLASSEX);
-    wincl.hIcon = LoadIcon(0, IDI_APPLICATION);
-    wincl.hIconSm = LoadIcon(0, IDI_WINLOGO);
-    wincl.hCursor = LoadCursor(0, IDC_ARROW);
-    wincl.lpszMenuName = 0;
-    wincl.cbClsExtra = 0;
-    wincl.cbWndExtra = 0;
-    wincl.hbrBackground = HBRUSH(COLOR_WINDOWTEXT);
-
-    if (!RegisterClassEx(&wincl) || ChangeDisplaySettings(&dmScreenSettings, CDS_FULLSCREEN != DISP_CHANGE_SUCCESSFUL))
-        return 0;
-
-    const HWND hwnd = CreateWindowEx(
-            0,
-            name,
-            title,
-            WS_POPUP,
-            0,
-            0,
-            displayWidth,
-            displayHeight,
-            0,
-            0,
-            hThisInstance,
-            0
-            );
-    ShowCursor(0);
-    ShowWindow(hwnd, nCmdShow);
-
-    while (GetMessage(&messages, 0, 0, 0)) {
-        TranslateMessage(&messages);
-        DispatchMessage(&messages);
-    }
-    return messages.wParam;
 }

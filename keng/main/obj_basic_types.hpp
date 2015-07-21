@@ -44,7 +44,7 @@ class TObject {
 
         virtual void update() = 0;
 
-        int _orderIndex; //little optimization rudiment
+        unsigned _orderIndex; //little optimization rudiment
 
     public:
         int const& typeIndex = _typeIndex;
@@ -57,18 +57,34 @@ class TObject {
         TObject* const& subObject = _subObject;
 
         TObject(bool passFlag);
-        inline void initTypeIndex(int typeIndex) {
-            if (_typeIndex == -1)
-                _typeIndex = typeIndex;
-        #if SAFE_MODE
-            else
-                ShowError("ERROR");
-        #endif
-        };
+        void initTypeIndex(int typeIndex);
         virtual ~TObject();
 
         virtual void remove() = 0;
 };
+
+inline void TObject::loopUpdate() {
+    update();
+    if (subObject != 0)
+        subObject->loopUpdate();
+    if (nextObject->passFlag)
+        nextObject->loopUpdate();
+}
+
+inline void TObject::loopDelete() {
+    if (nextObject->passFlag)
+        nextObject->loopDelete();
+    delete this;
+}
+
+inline void TObject::initTypeIndex(int typeIndex) {
+    if (_typeIndex == -1)
+        _typeIndex = typeIndex;
+#if SAFE_MODE
+    else
+        ShowMessage("WARNING! Tried to change object type index.");
+#endif
+}
 
 ///TBasis
 
@@ -78,23 +94,27 @@ class TBasis : public TObject {
     friend class TComponent;
 
     private:
-        int _orderSize;
+        unsigned _orderSize;
 
         TComponent* * orderComponent;
 
-        TObject* getPosition(int orderIndex);
+        TObject* getPosition(unsigned orderIndex);
 
         virtual void update() = 0;
 
     public:
-        int const& orderSize = _orderSize;
+        unsigned const& orderSize = _orderSize;
 
-        TBasis(TObject* baseObject, int orderSize);
+        TBasis(TObject* baseObject, unsigned orderSize);
         virtual ~TBasis();
 
-        inline void updateAll() {loopUpdate();};
+        void updateAll();
         void remove();
 };
+
+inline void TBasis::updateAll() {
+    loopUpdate();
+}
 
 ///TComponent
 
@@ -103,14 +123,14 @@ class TComponent : public TObject {
     friend class TBasis;
 
     private:
-        //int _orderIndex;
+        //unsigned _orderIndex;
 
         virtual void update() = 0;
 
     public:
-        int const& orderIndex = _orderIndex;
+        unsigned const& orderIndex = _orderIndex;
 
-        TComponent(TObject* baseObject /*!= 0*/, int orderIndex);
+        TComponent(TObject* baseObject /*!= 0*/, unsigned orderIndex);
         virtual ~TComponent();
 
         void remove();

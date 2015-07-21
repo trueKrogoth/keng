@@ -32,7 +32,7 @@ tileset_t::tileset_t(const char* filename) {
     file >> sprite_filename_str;
     file.close();
 
-    _spriteset = new spriteset_t(sprite_filename_str.c_str());
+    _spriteset = Spriteset::file(sprite_filename_str.c_str());
 
     _types = spriteset->spritesX * spriteset->spritesY;
 

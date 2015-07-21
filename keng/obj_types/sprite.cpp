@@ -22,7 +22,7 @@
 
 using namespace Keng;
 
-TSprite::TSprite(TFrame* baseFrame, int orderIndex,
+TSprite::TSprite(TFrame* baseFrame, unsigned orderIndex,
                  spriteset_t* spriteset, int startX, int startY) :
                  TComponent(baseFrame, orderIndex)
              #if SAFE_MODE

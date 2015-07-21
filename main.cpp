@@ -10,7 +10,7 @@ int WINAPI WinMain(HINSTANCE hThisInstance,
                    HINSTANCE hPrevInstance,
                    LPSTR lpszArgument,
                    int nCmdShow) {
-    Prog::init(_T("Game"), _T("Game"), 15, 32, 16);
+    Prog::init("Game", "Game", 15, 32, 16);
     return Prog::main(hThisInstance,
                       hPrevInstance,
                       lpszArgument,

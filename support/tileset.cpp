@@ -16,8 +16,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <fstream>
 #include "tileset.hpp"
+#include <fstream>
 #include "../main/prog.hpp"
 
 using namespace Keng;

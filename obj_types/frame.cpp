@@ -16,12 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "obj_constructor.hpp"
-#include "obj_interface.hpp"
+#include "frame.hpp"
 
 using namespace Keng;
 
-__object_constructor_indexer::__object_constructor_indexer(int type_index, TObject*(*constructor)(CObject*, TObject*)) {
-    ObjectIndexedData::constructor[type_index] = constructor;
-    delete this;
+TFrame::TFrame(TObject* baseObject, int orderSize,
+               int startX, int startY,
+               int __typeIndex) : TBasis(baseObject, orderSize, __typeIndex) {
+    _x = startX;
+    _y = startY;
+}
+
+void TFrame::update() {
 }

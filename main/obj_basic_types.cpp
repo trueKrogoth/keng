@@ -17,28 +17,17 @@
  */
 
 #include "obj_basic_types.hpp"
-#include "obj_interface.hpp"
+#include "../support/error.hpp"
+#if SAFE_MODE
+#include "obj_type_index.hpp"
+#endif
 
 using namespace Keng;
 
-///CObject, TObject
+///TObject
 
-CObject::CObject(int configIndex, int typeIndex) {
-#if CHECK_INPUT
-    if (configIndex < 0) {
-        ShowError("INPUT ERROR");
-        ObjectIndexedData::config[0] = this;
-    }
-    else
-    if (configIndex >= OBJECT_CONFIG_MAX_COUNT) {
-        ShowError("INPUT ERROR");
-        ObjectIndexedData::config[OBJECT_CONFIG_MAX_COUNT - 1] = this;
-    }
-    else
-#endif
-    ObjectIndexedData::config[configIndex] = this;
-
-#if CHECK_INPUT
+TObject::TObject(int typeIndex, bool passFlag) {
+#if SAFE_MODE
     if (typeIndex < 0) {
         ShowError("INPUT ERROR");
         _typeIndex = 0;
@@ -51,6 +40,8 @@ CObject::CObject(int configIndex, int typeIndex) {
     else
 #endif
     _typeIndex = typeIndex;
+
+    this->_passFlag = passFlag;
 }
 
 TObject::~TObject() {
@@ -72,10 +63,19 @@ void TObject::loopDelete() {
     delete this;
 }
 
-///CBasis, TBasis
+///TBasis
 
-CBasis::CBasis(int configIndex, int typeIndex, int orderSize) : CObject(configIndex, typeIndex) {
-#if CHECK_INPUT
+TBasis::TBasis(TObject* baseObject, int orderSize, int __typeIndex) : TObject(__typeIndex, false) {
+    _prevObject = this;
+    _nextObject = this;
+    _subObject = 0;
+    this->_baseObject = baseObject;
+    if (baseObject != 0)
+        baseObject->_subObject = this;
+
+    _orderIndex = -1;
+
+#if SAFE_MODE
     if (orderSize < 0) {
         ShowError("INPUT ERROR");
         _orderSize = orderSize;
@@ -83,23 +83,6 @@ CBasis::CBasis(int configIndex, int typeIndex, int orderSize) : CObject(configIn
     else
 #endif
     _orderSize = orderSize;
-}
-
-TBasis::TBasis(int typeIndex, CBasis* config, TObject* baseObject) : TObject() {
-    passFlag = false;
-
-    prevObject = this;
-    nextObject = this;
-    subObject = 0;
-    this->baseObject = baseObject;
-    if (baseObject != 0)
-        baseObject->subObject = this;
-
-    _orderIndex = -1;
-
-    _typeIndex = typeIndex;
-
-    _orderSize = config->orderSize;
 
     orderComponent = new TComponent*[orderSize];
     for (int i = 0; i != orderSize; i++)
@@ -109,14 +92,14 @@ TBasis::TBasis(int typeIndex, CBasis* config, TObject* baseObject) : TObject() {
 TBasis::~TBasis() {
 }
 
-void TBasis::destroy() {
+void TBasis::remove() {
     if (baseObject != 0)
-        baseObject->subObject = 0;
+        baseObject->_subObject = 0;
     loopDelete();
 }
 
 TObject* TBasis::getPosition(int orderIndex) {
-#if CHECK_INPUT
+#if SAFE_MODE
     if (orderIndex >= orderSize) {
         ShowError("ERROR");
         orderIndex = orderSize - 1;
@@ -130,10 +113,10 @@ TObject* TBasis::getPosition(int orderIndex) {
     return orderComponent[orderIndex];
 }
 
-///CComponent, TComponent
+///TComponent
 
-CComponent::CComponent(int configIndex, int typeIndex, int orderIndex) : CObject(configIndex, typeIndex) {
-#if CHECK_INPUT
+TComponent::TComponent(TObject * baseObject, int orderIndex, int __typeIndex) : TObject(__typeIndex, true) {
+#if SAFE_MODE
     if (orderIndex < 0) {
         ShowError("INPUT ERROR");
         _orderIndex = 0;
@@ -141,44 +124,42 @@ CComponent::CComponent(int configIndex, int typeIndex, int orderIndex) : CObject
     else
 #endif
     _orderIndex = orderIndex;
-}
 
-TComponent::TComponent(int typeIndex, CComponent * config, TObject * baseObject) : TObject() {
-    passFlag = true;
-
-    _typeIndex = typeIndex;
-
-    _orderIndex = config->orderIndex;
-
-    this->baseObject = baseObject;
+    this->_baseObject = baseObject;
+#if SAFE_MODE
     if (baseObject == 0) {
-        prevObject = this;
-        nextObject = this;
+        _prevObject = this;
+        _nextObject = this;
     }
-    else {
-        prevObject = basis->getPosition(orderIndex);
-        basis->orderComponent[orderIndex] = this;
-        nextObject = prevObject->nextObject;
-        prevObject->nextObject = this;
-        nextObject->prevObject = this;
+    else
+#endif
+    {
+        _prevObject = static_cast<TBasis*>(baseObject)->getPosition(orderIndex);
+        static_cast<TBasis*>(baseObject)->orderComponent[orderIndex] = this;
+        _nextObject = prevObject->nextObject;
+        prevObject->_nextObject = this;
+        nextObject->_prevObject = this;
     }
-    subObject = 0;
+    _subObject = 0;
 }
 
 TComponent::~TComponent() {
 }
 
-void TComponent::destroy() {
-    prevObject->nextObject = nextObject;
-    nextObject->prevObject = prevObject;
+void TComponent::remove() {
+    prevObject->_nextObject = nextObject;
+    nextObject->_prevObject = prevObject;
 
-    if (basis->orderComponent[orderIndex] == this) {
+#if SAFE_MODE
+    if (baseObject != 0)
+#endif
+    if (static_cast<TBasis*>(baseObject)->orderComponent[orderIndex] == this) {
         if (prevObject->_orderIndex == orderIndex)
-            //^ component rudiment run-time advantage (no check if the object is component)
-            basis->orderComponent[orderIndex] = static_cast<TComponent*>(prevObject);
+            //^ component rudiment run-time advantage (no check whether the object is component)
+            static_cast<TBasis*>(baseObject)->orderComponent[orderIndex] = static_cast<TComponent*>(prevObject);
                 //^ semantical explicitation compile-time disadvantage
         else
-            basis->orderComponent[orderIndex] = 0;
+            static_cast<TBasis*>(baseObject)->orderComponent[orderIndex] = 0;
     }
 
     delete this;

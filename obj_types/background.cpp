@@ -16,24 +16,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KENG_OBJ_TYPE_IDS_HPP_INCLUDED
-#define KENG_OBJ_TYPE_IDS_HPP_INCLUDED
+#include "background.hpp"
+#include <gl/gl.h>
 
-namespace Keng {
+using namespace Keng;
 
-enum __object_type_ids {
-///>
-    OBJECT_TYPE_SCREEN,
-    OBJECT_TYPE_WORLD,
-    OBJECT_TYPE_DUMMY,
-    OBJECT_TYPE_BACKGROUND,
-    OBJECT_TYPE_CURSOR,
-    OBJECT_TYPE_SPRITE,
-    OBJECT_TYPE_TILEBOX,
-///<
-OBJECT_TYPE_COUNT
-};
-
+TBackground::TBackground(TObject* baseObject, int orderIndex,
+                         int __typeIndex) : TComponent(baseObject, orderIndex, __typeIndex) {
 }
 
-#endif // KENG_OBJ_TYPE_IDS_HPP_INCLUDED
+void TBackground::update() {
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glClear(GL_COLOR_BUFFER_BIT);
+    glClearColor(.0f, .0f, .0f, 1.0f);
+}

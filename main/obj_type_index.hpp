@@ -16,11 +16,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KENG_SUPPORT_ERROR_HPP_INCLUDED
-#define KENG_SUPPORT_ERROR_HPP_INCLUDED
+#ifndef KENG_MAIN_TYPE_INDEX_HPP_INCLUDED
+#define KENG_MAIN_TYPE_INDEX_HPP_INCLUDED
+    #include <boost/preprocessor/arithmetic/inc.hpp>
+    #include <boost/preprocessor/slot/slot.hpp>
 
-#define SAFE_MODE 1
+    #define BOOST_PP_VALUE 0
+    #include BOOST_PP_ASSIGN_SLOT(1)
+    #undef BOOST_PP_VALUE
 
-#define ShowError(message) int dummy
-
-#endif // KENG_SUPPORT_ERROR_HPP_INCLUDED
+    #define UNIQUE_OBJECT_TYPE_INDEX BOOST_PP_SLOT(1)
+    #define OBJECT_TYPE_COUNT BOOST_PP_SLOT(1)
+#else
+    #define BOOST_PP_VALUE BOOST_PP_INC(BOOST_PP_SLOT(1))
+    #include BOOST_PP_ASSIGN_SLOT(1)
+    #undef BOOST_PP_VALUE
+#endif

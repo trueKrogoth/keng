@@ -21,36 +21,22 @@
 
 namespace Keng {
 
-///CObject, TObject
-
-class CObject {
-    private:
-        int _typeIndex;
-
-    public:
-        int const& typeIndex = _typeIndex;
-
-        CObject(int configIndex, int typeIndex);
-};
+///TObject
 
 class TObject {
+    friend class TBasis;
+    friend class TComponent;
+    friend void LoopUpdate(TObject*);
+
     private:
         int _typeIndex;
 
-    protected:
-        int const& typeIndex = _typeIndex;
-//-----------------
-    friend class TBasis;
-    friend class TComponent;
-    friend void LoopUpdate(TObject*); //obj_interface.hpp
+        bool _passFlag;
 
-    private:
-        bool passFlag;
-
-        TObject* prevObject;
-        TObject* nextObject;
-        TObject* baseObject;
-        TObject* subObject;
+        TObject* _prevObject;
+        TObject* _nextObject;
+        TObject* _baseObject;
+        TObject* _subObject;
 
         void loopUpdate();
         void loopDelete();
@@ -60,33 +46,31 @@ class TObject {
         int _orderIndex; //performance rudiment
 
     public:
+        int const& typeIndex = _typeIndex;
+
+        bool const& passFlag = _passFlag;
+
+        TObject* const& prevObject = _prevObject;
+        TObject* const& nextObject = _nextObject;
+        TObject* const& baseObject = _baseObject;
+        TObject* const& subObject = _subObject;
+
+        TObject(int typeIndex, bool passFlag);
         virtual ~TObject();
+
+        virtual void remove() = 0;
 };
 
-///CBasis, TBasis
-
-class CBasis : public CObject {
-    private:
-        int _orderSize;
-
-    public:
-        int const& orderSize = _orderSize;
-
-        CBasis(int configIndex, int typeIndex, int orderSize);
-};
+///TBasis
 
 class TComponent;
 class TBasis : public TObject {
-    private:
-        int _orderSize;
-
-    public:
-        int const& orderSize = _orderSize;
-//-----------------
     friend class TObject;
     friend class TComponent;
 
     private:
+        int _orderSize;
+
         TComponent* * orderComponent; //semantical explicitation
 
         TObject* getPosition(int orderIndex);
@@ -94,43 +78,33 @@ class TBasis : public TObject {
         virtual void update() = 0;
 
     public:
-        TBasis(int typeIndex, CBasis* config, TObject* baseObject);
+        int const& orderSize = _orderSize;
+
+        TBasis(TObject* baseObject, int orderSize, int __typeIndex);
         virtual ~TBasis();
-        void destroy();
+
+        inline void updateAll() {loopUpdate();};
+        void remove();
 };
 
-///CComponent, TComponent
-
-class CComponent : public CObject {
-    private:
-        int _orderIndex;
-
-    public:
-        int const& orderIndex = _orderIndex;
-
-        CComponent(int configIndex, int typeIndex, int orderIndex);
-};
+///TComponent
 
 class TComponent : public TObject {
-    private:
-        //int _orderIndex;
-
-    protected:
-        int const& orderIndex = _orderIndex;
-//-----------------
     friend class TObject;
     friend class TBasis;
 
     private:
+        //int _orderIndex;
+
         virtual void update() = 0;
 
-    protected:
-        TBasis* const& basis = static_cast<TBasis*>(baseObject);
-
     public:
-        TComponent(int typeIndex, CComponent* config, TObject* baseObject);
+        int const& orderIndex = _orderIndex;
+
+        TComponent(TObject* baseObject /*!= 0*/, int orderIndex, int __typeIndex);
         virtual ~TComponent();
-        void destroy();
+
+        void remove();
 };
 
 }

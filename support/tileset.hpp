@@ -51,7 +51,7 @@ class tileset_t {
 
         spriteset_t* const& spriteset = _spriteset;
 
-        tileset_t(const char* filename);
+        tileset_t(const char* filename = "");
 };
 
 #endif // KENG_SUPPORT_TILESET_HPP_INCLUDED

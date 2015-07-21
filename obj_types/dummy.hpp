@@ -16,11 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KENG_SUPPORT_ERROR_HPP_INCLUDED
-#define KENG_SUPPORT_ERROR_HPP_INCLUDED
+#ifndef KENG_OBJ_TYPES_DUMMY_HPP_INCLUDED
+#define KENG_OBJ_TYPES_DUMMY_HPP_INCLUDED
 
-#define SAFE_MODE 1
+#include "../main/obj_basic_types.hpp"
+#include "../main/obj_type_index.hpp"
 
-#define ShowError(message) int dummy
+///>
+#define DEFAULT_ORDER_INDEX 0
+///<
 
-#endif // KENG_SUPPORT_ERROR_HPP_INCLUDED
+#define OBJECT_TYPE_DUMMY UNIQUE_OBJECT_TYPE_INDEX
+
+namespace Keng {
+
+class TDummy : public TComponent {
+    private:
+        virtual void update();
+
+    public:
+        TDummy(TObject* baseObject /*!= 0*/,
+               int orderIndex = DEFAULT_ORDER_INDEX,
+               int __typeIndex = UNIQUE_OBJECT_TYPE_INDEX);
+};
+
+}
+
+#undef DEFAULT_ORDER_INDEX
+
+#endif // KENG_OBJ_TYPES_DUMMY_HPP_INCLUDED

@@ -19,6 +19,7 @@
 #ifndef KENG_SUPPORT_GRAPHICS_HPP_INCLUDED
 #define KENG_SUPPORT_GRAPHICS_HPP_INCLUDED
 
+#include <gl/gl.h>
 #include "spriteset.hpp"
 
 void DrawSprite(spriteset_t* spriteset, int column = 0, int row = 0, GLfloat scale = 1.0f, bool mirrorX = false, bool mirrorY = false);

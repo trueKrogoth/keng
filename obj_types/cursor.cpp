@@ -16,11 +16,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "obj_interface.hpp"
+#include "cursor.hpp"
+#include "../main/prog.hpp"
 
 using namespace Keng;
 
-///ObjectIndexedData
+TCursor::TCursor(TFrame* baseFrame, int orderIndex,
+                 int __typeIndex) : TComponent(baseFrame, orderIndex, __typeIndex) {
+    sprite = new TSprite(static_cast<TFrame*>(baseFrame), 1, new spriteset_t("cursor.spr"));
+}
 
-TObject*(*ObjectIndexedData::constructor[OBJECT_TYPE_COUNT])(CObject*, TObject*);
-CObject* ObjectIndexedData::config[OBJECT_CONFIG_MAX_COUNT];
+void TCursor::update() {
+    sprite->setCoords(Prog::mouseX, Prog::mouseY);
+}

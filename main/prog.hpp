@@ -34,7 +34,7 @@ class Prog {
 
     static int _displayWidth;
     static int _displayHeight;
-    static int _displayAspectRatio;
+    static float _displayAspectRatio;
     static int _displayCenterX;
     static int _displayCenterY;
 
@@ -58,17 +58,17 @@ class Prog {
     /*undefined*/ static void onClose();
 
     public:
-        static const char* const& name;
-        static const char* const& title;
-        static unsigned int const& frameTime;
+        static constexpr const char* const& name = _name;
+        static constexpr const char* const& title = _title;
+        static constexpr unsigned int const& frameTime = _frameTime;
 
-        static int const& displayWidth;
-        static int const& displayHeight;
-        static float const& displayAspectRatio;
-        static int const& displayCenterX;
-        static int const& displayCenterY;
-        static int const& mouseX;
-        static int const& mouseY;
+        static constexpr int const& displayWidth = _displayWidth;
+        static constexpr int const& displayHeight = _displayHeight;
+        static constexpr float const& displayAspectRatio = _displayAspectRatio;
+        static constexpr int const& displayCenterX = _displayCenterX;
+        static constexpr int const& displayCenterY = _displayCenterY;
+        static constexpr int const& mouseX = _mouseX;
+        static constexpr int const& mouseY = _mouseY;
 
         static void init(const char* name, const char* title, unsigned int frameTime, BYTE colorBits, BYTE zBufferBits);
         static int WINAPI main(HINSTANCE hThisInstance,

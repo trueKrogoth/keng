@@ -16,26 +16,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KENG_MAIN_OBJ_CONSTRUCTOR_HPP_INCLUDED
-#define KENG_MAIN_OBJ_CONSTRUCTOR_HPP_INCLUDED
+#ifndef KENG_OBJ_TYPES_CURSOR_HPP_INCLUDED
+#define KENG_OBJ_TYPES_CURSOR_HPP_INCLUDED
 
-#include "obj_basic_types.hpp"
+#include "../main/obj_basic_types.hpp"
+#include "sprite.hpp"
+#include "../main/obj_type_index.hpp"
+
+///>
+#define DEFAULT_ORDER_INDEX 0
+///<
+
+#define OBJECT_TYPE_CURSOR UNIQUE_OBJECT_TYPE_INDEX
 
 namespace Keng {
 
-class __object_constructor_indexer {
+class TCursor : public TComponent {
+    private:
+        TSprite* sprite;
+
+        virtual void update();
+
     public:
-        __object_constructor_indexer(int type_index, TObject*(*constructor)(CObject*, TObject*));
+        TCursor(TFrame* baseFrame /*!= 0*/,
+                int orderIndex = DEFAULT_ORDER_INDEX,
+                int __typeIndex = UNIQUE_OBJECT_TYPE_INDEX);
 };
 
-template<class T, class C> TObject* __object_constructor(CObject* config, TObject* baseObject) {
-    return new T(static_cast<C*>(config), baseObject);
 }
 
-#define DEFINE_OBJECT_CONSTRUCTOR(type_index, T, C) \
-__object_constructor_indexer T##_indexer_instance(type_index, &__object_constructor<T, C>); \
-T::T(int typeIndex, CObject* config, TObject* baseObject) : TObject(type_index, config, baseObject = 0)
+#undef DEFAULT_ORDER_INDEX
 
-}
-
-#endif // KENG_MAIN_OBJ_CONSTRUCTOR_HPP_INCLUDED
+#endif // KENG_OBJ_TYPES_CURSOR_HPP_INCLUDED

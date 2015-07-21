@@ -16,20 +16,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KENG_OBJ_CFGS_HPP_INCLUDED
-#define KENG_OBJ_CFGS_HPP_INCLUDED
+#ifndef KENG_OBJ_TYPES_BACKGROUND_HPP_INCLUDED
+#define KENG_OBJ_TYPES_BACKGROUND_HPP_INCLUDED
+
+#include "../main/obj_basic_types.hpp"
+#include "../main/obj_type_index.hpp"
+
+///>
+#define DEFAULT_ORDER_INDEX 0
+///<
+
+#define OBJECT_TYPE_BACKGROUND UNIQUE_OBJECT_TYPE_INDEX
 
 namespace Keng {
 
-///>
-const int OBJECT_CONFIG_MAX_COUNT = 50;
-///<
+class TBackground : public TComponent {
+    private:
+        virtual void update();
 
-inline void InitObjectPrescribedConfigs() {
-///>
-///<
+    public:
+        TBackground(TObject* baseObject /*!= 0*/,
+                    int orderIndex = DEFAULT_ORDER_INDEX,
+                    int __typeIndex = UNIQUE_OBJECT_TYPE_INDEX);
 };
 
 }
 
-#endif // KENG_OBJ_CFGS_HPP_INCLUDED
+#undef DEFAULT_ORDER_INDEX
+
+#endif // KENG_OBJ_TYPES_BACKGROUND_HPP_INCLUDED

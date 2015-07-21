@@ -23,29 +23,19 @@
 using namespace Keng;
 
 const char* Prog::_name;
-const char* const& Prog::name = Prog::_name;
 const char* Prog::_title;
-const char* const& Prog::title = Prog::_title;
 unsigned int Prog::_frameTime;
-unsigned int const& Prog::frameTime = Prog::_frameTime;
 BYTE Prog::colorBits;
 BYTE Prog::zBufferBits;
 
 int Prog::_displayWidth;
-int const& Prog::displayWidth = Prog::_displayWidth;
 int Prog::_displayHeight;
-int const& Prog::displayHeight = Prog::_displayHeight;
-int Prog::_displayAspectRatio;
-float const& Prog::displayAspectRatio = Prog::_displayAspectRatio;
+float Prog::_displayAspectRatio;
 int Prog::_displayCenterX;
-int const& Prog::displayCenterX = Prog::_displayCenterX;
 int Prog::_displayCenterY;
-int const& Prog::displayCenterY = Prog::_displayCenterY;
 
 int Prog::_mouseX;
-int const& Prog::mouseX = Prog::_mouseX;
 int Prog::_mouseY;
-int const& Prog::mouseY = Prog::_mouseY;
 
 UINT_PTR Prog::timer;
 HDC Prog::hDC;
@@ -77,8 +67,6 @@ LRESULT CALLBACK Prog::proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
             onKeyUp(wParam);
             return 0;
         case WM_CREATE:
-            InitObjectPrescribedConfigs();
-            onCreate();
             timer = SetTimer(hwnd, 1, frameTime, 0);
             hDC = GetDC(hwnd);
             pfd = {sizeof(PIXELFORMATDESCRIPTOR), //size of structure
@@ -107,6 +95,7 @@ LRESULT CALLBACK Prog::proc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPara
             glLoadIdentity();
             glOrtho(.0f, displayWidth, displayHeight, .0f, .0f, 1.0f);
             glMatrixMode(GL_MODELVIEW);
+            onCreate();
             return 0;
         case WM_CLOSE:
             onClose();

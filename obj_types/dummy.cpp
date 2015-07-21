@@ -16,11 +16,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KENG_SUPPORT_ERROR_HPP_INCLUDED
-#define KENG_SUPPORT_ERROR_HPP_INCLUDED
+#include "dummy.hpp"
 
-#define SAFE_MODE 1
+using namespace Keng;
 
-#define ShowError(message) int dummy
+TDummy::TDummy(TObject* baseObject, int orderIndex,
+               int __typeIndex) : TComponent(baseObject, orderIndex, __typeIndex) {
+}
 
-#endif // KENG_SUPPORT_ERROR_HPP_INCLUDED
+void TDummy::update() {
+}

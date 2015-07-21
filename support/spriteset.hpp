@@ -22,7 +22,7 @@
 #include <gl/gl.h>
 
 ///>
-#define SPRITES_PATH "sprites/"
+#define SPRITES_PATH "sprites\\"
 ///<
 
 #define ANIMATION_TYPES_COUNT 1

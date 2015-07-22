@@ -74,7 +74,9 @@ class TWorld : public TFrame {
 };
 
 inline TWorld::TWorld(IM_ARGS(ARGS)) : TFrame(IM_VALS(CFRAME_VALS)) {
+#if SAFE_MODE
     _tilebox = 0;
+#endif
 }
 
 inline TWorld::TWorld(ARGS) : TWorld(IM_VALS(VALS)) {

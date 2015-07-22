@@ -35,11 +35,11 @@ TObject::~TObject() {
 //  ____________________
 ///[_______TBasis_______]
 
-TBasis::TBasis(int dummy, unsigned typeIndex, TObject* baseObject, unsigned orderSize) : TObject(typeIndex, false) {
+TBasis::TBasis(bool __dummy, unsigned __typeIndex, TObject* baseObject, unsigned orderSize) : TObject(__typeIndex, false) {
     _prevObject = this;
     _nextObject = this;
     _subObject = 0;
-    this->_baseObject = baseObject;
+    _baseObject = baseObject;
     if (baseObject != 0)
         baseObject->_subObject = this;
 
@@ -79,10 +79,10 @@ TObject* TBasis::getPosition(unsigned orderIndex) {
 //  ________________________
 ///[_______TComponent_______]
 
-TComponent::TComponent(int dummy, unsigned typeIndex, TObject * baseObject, unsigned orderIndex) : TObject(typeIndex, true) {
+TComponent::TComponent(bool __dummy, unsigned __typeIndex, TObject * baseObject, unsigned orderIndex) : TObject(__typeIndex, true) {
     _orderIndex = orderIndex;
 
-    this->_baseObject = baseObject;
+    _baseObject = baseObject;
 #if SAFE_MODE
     if (baseObject == 0) {
         ShowMessage("WARNING! Created a component at no basis.");

@@ -97,7 +97,7 @@ class TBasis : public TObject {
         virtual void update() = 0;
 
     protected:
-        TBasis(int dummy, unsigned typeIndex, TObject* baseObject, unsigned orderSize);
+        TBasis(bool __dummy, unsigned __typeIndex, TObject* baseObject, unsigned orderSize);
 
     public:
         unsigned const& orderSize = _orderSize;
@@ -115,6 +115,7 @@ inline void TBasis::updateAll() {
 #define CBASIS_VALS\
         baseObject,\
         orderSize
+#define BBASIS static_cast<TBasis*>(baseObject)
 
 //  ________________________
 ///[_______TComponent_______]
@@ -129,7 +130,7 @@ class TComponent : public TObject {
         virtual void update() = 0;
 
     protected:
-        TComponent(int dummy, unsigned typeIndex, TObject* baseObject/*!= 0*/, unsigned orderIndex);
+        TComponent(bool __dummy, unsigned __typeIndex, TObject* baseObject/*!= 0*/, unsigned orderIndex);
 
     public:
         unsigned const& orderIndex = _orderIndex;
@@ -147,12 +148,12 @@ class TComponent : public TObject {
 ///[_______IM_ARGS,_IM_VALS_______]
 
 #define IM_ARGS(ARGS)\
-        int dummy,\
-        unsigned typeIndex,\
+        bool __dummy,\
+        unsigned __typeIndex,\
         ARGS
 
 #define IM_VALS(VALS)\
-        0,\
+        false,\
         UNIQUE_OBJ_TYPE_INDEX,\
         VALS
 

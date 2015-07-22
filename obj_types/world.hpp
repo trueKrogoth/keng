@@ -16,10 +16,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KENG_OBJ_TYPES_FRAME_HPP_INCLUDED
-#define KENG_OBJ_TYPES_FRAME_HPP_INCLUDED
+#ifndef KENG_OBJ_TYPES_WORLD_HPP_INCLUDED
+#define KENG_OBJ_TYPES_WORLD_HPP_INCLUDED
 
-#include "../main/obj_basic_types.hpp"
+#include "frame.hpp"
+#include "tilebox.hpp"
 #include "../main/obj_type_index.hpp"
 
 #define DEFS\
@@ -46,58 +47,79 @@
         startX,\
         startY
 
-#define TFRAME_INDEX UNIQUE_OBJ_TYPE_INDEX
-#define CFRAME_VALS VALS
-#define BFRAME static_cast<TFrame*>(baseObject)
+#define TWORLD_INDEX UNIQUE_OBJ_TYPE_INDEX
+#define CWORLD_VALS VALS
+#define BWORLD static_cast<TWorld*>(baseObject)
 
 namespace Keng {
 
-class TFrame : public TBasis {
+class TWorld : public TFrame {
     private:
         virtual void update();
 
     protected:
-        int _boundRight;
-        int _boundBottom;
+        TTilebox* _tilebox;
 
-        int _x;
-        int _y;
-
-        TFrame(IM_ARGS(ARGS));
+        TWorld(IM_ARGS(ARGS));
 
     public:
-        int const& boundRight = _boundRight;
-        int const& boundBottom = _boundBottom;
+        TTilebox* const& tilebox = _tilebox;
 
-        int const& x = _x;
-        int const& y = _y;
+        TWorld(DEFS);
 
-        TFrame(DEFS);
+        void setTilebox(TTilebox* tilebox);
 
         virtual void setX(int x);
         virtual void setY(int y);
 };
 
-inline TFrame::TFrame(IM_ARGS(ARGS)) : TBasis(IM_VALS(CBASIS_VALS)) {
-    _boundRight = boundRight;
-    _boundBottom = boundBottom;
-
-    _x = startX;
-    _y = startY;
+inline TWorld::TWorld(IM_ARGS(ARGS)) : TFrame(IM_VALS(CFRAME_VALS)) {
+    _tilebox = 0;
 }
 
-inline TFrame::TFrame(ARGS) : TFrame(IM_VALS(VALS)) {
+inline TWorld::TWorld(ARGS) : TWorld(IM_VALS(VALS)) {
 }
 
-inline void TFrame::update() {
+inline void TWorld::update() {
 }
 
-inline void TFrame::setX(int x) {
-    _x = x;
+inline void TWorld::setTilebox(TTilebox* tilebox) {
+    _tilebox = tilebox;
+
+    _boundRight = tilebox->tilesX * tilebox->tileset->tileWidth - Prog::displayWidth;
+    if (boundRight < 0)
+        _boundRight = 0;
+    _boundBottom = tilebox->tilesY * tilebox->tileset->tileHeight - Prog::displayHeight;
+    if (boundBottom < 0)
+        _boundBottom = 0;
 }
 
-inline void TFrame::setY(int y) {
-    _y = y;
+void TWorld::setX(int x) {
+    if (x < 0)
+        _x = 0;
+    else
+    if (x > boundRight)
+        _x = boundRight;
+    else
+        _x = x;
+#if SAFE_MODE
+    if (tilebox != 0)
+#endif
+    tilebox->updateClipX();
+}
+
+void TWorld::setY(int y) {
+    if (y < 0)
+        _y = 0;
+    else
+    if (y > boundBottom)
+        _y = boundBottom;
+    else
+        _y = y;
+#if SAFE_MODE
+    if (tilebox != 0)
+#endif
+    tilebox->updateClipY();
 }
 
 }
@@ -106,4 +128,4 @@ inline void TFrame::setY(int y) {
 #undef ARGS
 #undef VALS
 
-#endif // KENG_OBJ_TYPES_FRAME_HPP_INCLUDED
+#endif // KENG_OBJ_TYPES_WORLD_HPP_INCLUDED

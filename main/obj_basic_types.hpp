@@ -23,14 +23,15 @@
 
 namespace Keng {
 
-///TObject
+//  _____________________
+///[_______TObject_______]
 
 class TObject {
     friend class TBasis;
     friend class TComponent;
 
     private:
-        int _typeIndex;
+        unsigned _typeIndex;
 
         bool _passFlag;
 
@@ -46,8 +47,11 @@ class TObject {
 
         unsigned _orderIndex; //little optimization rudiment
 
+    protected:
+        TObject(unsigned typeIndex, bool passFlag);
+
     public:
-        int const& typeIndex = _typeIndex;
+        unsigned const& typeIndex = _typeIndex;
 
         bool const& passFlag = _passFlag;
 
@@ -56,8 +60,6 @@ class TObject {
         TObject* const& baseObject = _baseObject;
         TObject* const& subObject = _subObject;
 
-        TObject(bool passFlag);
-        void initTypeIndex(int typeIndex);
         virtual ~TObject();
 
         virtual void remove() = 0;
@@ -77,16 +79,8 @@ inline void TObject::loopDelete() {
     delete this;
 }
 
-inline void TObject::initTypeIndex(int typeIndex) {
-    if (_typeIndex == -1)
-        _typeIndex = typeIndex;
-#if SAFE_MODE
-    else
-        ShowMessage("WARNING! Tried to change object type index.");
-#endif
-}
-
-///TBasis
+//  ____________________
+///[_______TBasis_______]
 
 class TComponent;
 class TBasis : public TObject {
@@ -102,10 +96,12 @@ class TBasis : public TObject {
 
         virtual void update() = 0;
 
+    protected:
+        TBasis(int dummy, unsigned typeIndex, TObject* baseObject, unsigned orderSize);
+
     public:
         unsigned const& orderSize = _orderSize;
 
-        TBasis(TObject* baseObject, unsigned orderSize);
         virtual ~TBasis();
 
         void updateAll();
@@ -116,7 +112,12 @@ inline void TBasis::updateAll() {
     loopUpdate();
 }
 
-///TComponent
+#define CBASIS_VALS\
+        baseObject,\
+        orderSize
+
+//  ________________________
+///[_______TComponent_______]
 
 class TComponent : public TObject {
     friend class TObject;
@@ -127,14 +128,33 @@ class TComponent : public TObject {
 
         virtual void update() = 0;
 
+    protected:
+        TComponent(int dummy, unsigned typeIndex, TObject* baseObject/*!= 0*/, unsigned orderIndex);
+
     public:
         unsigned const& orderIndex = _orderIndex;
 
-        TComponent(TObject* baseObject /*!= 0*/, unsigned orderIndex);
         virtual ~TComponent();
 
         void remove();
 };
+
+#define CCOMPONENT_VALS\
+        baseObject,\
+        orderIndex
+
+//  ______________________________
+///[_______IM_ARGS,_IM_VALS_______]
+
+#define IM_ARGS(ARGS)\
+        int dummy,\
+        unsigned typeIndex,\
+        ARGS
+
+#define IM_VALS(VALS)\
+        0,\
+        UNIQUE_OBJ_TYPE_INDEX,\
+        VALS
 
 }
 

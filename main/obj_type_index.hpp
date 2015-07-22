@@ -16,17 +16,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "cursor.hpp"
-#include "../main/prog.hpp"
+#ifndef KENG_MAIN_TYPE_INDEX_HPP_INCLUDED
+#define KENG_MAIN_TYPE_INDEX_HPP_INCLUDED
 
-using namespace Keng;
+    #include <boost/preprocessor/arithmetic/inc.hpp>
+    #include <boost/preprocessor/slot/slot.hpp>
 
-TCursor::TCursor(TFrame* baseFrame, unsigned orderIndex) :
-                 TComponent(baseFrame, orderIndex) {
-                 initTypeIndex(OBJECT_TYPE_FRAME);
-    sprite = new TSprite(static_cast<TFrame*>(baseFrame), 1, Spriteset::file("cursor.spr"));
-}
+    #define BOOST_PP_VALUE 0
+    #include BOOST_PP_ASSIGN_SLOT(1)
+    #undef BOOST_PP_VALUE
 
-void TCursor::update() {
-    sprite->setCoords(Prog::mouseX, Prog::mouseY);
-}
+    #define UNIQUE_OBJ_TYPE_INDEX BOOST_PP_SLOT(1)
+    #define OBJ_TYPE_COUNT BOOST_PP_SLOT(1)
+
+#else
+
+    #define BOOST_PP_VALUE BOOST_PP_INC(BOOST_PP_SLOT(1))
+    #include BOOST_PP_ASSIGN_SLOT(1)
+    #undef BOOST_PP_VALUE
+
+#endif

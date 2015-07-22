@@ -22,15 +22,31 @@
 #include "../main/obj_basic_types.hpp"
 #include "../main/obj_type_index.hpp"
 
-///>
-#define DEFAULT_ORDER_SIZE 30
-#define DEFAULT_BOUND_RIGHT 0
-#define DEFAULT_BOUND_BOTTOM 0
-#define DEFAULT_START_X 0
-#define DEFAULT_START_Y 0
-///<
+#define TFRAME_INDEX UNIQUE_OBJ_TYPE_INDEX
 
-#define OBJECT_TYPE_FRAME UNIQUE_OBJECT_TYPE_INDEX
+#define CFRAME_DEFS\
+        TObject* baseObject = 0,\
+        unsigned orderSize = 30,\
+        int boundRight = 0,\
+        int boundBottom = 0,\
+        int startX = 0,\
+        int startY = 0
+
+#define CFRAME_ARGS\
+        TObject* baseObject,\
+        unsigned orderSize,\
+        int boundRight,\
+        int boundBottom,\
+        int startX,\
+        int startY
+
+#define CFRAME_VALS\
+        baseObject,\
+        orderSize,\
+        boundRight,\
+        boundBottom,\
+        startX,\
+        startY
 
 namespace Keng {
 
@@ -45,6 +61,8 @@ class TFrame : public TBasis {
         int _x;
         int _y;
 
+        TFrame(IM_ARGS(CFRAME_ARGS));
+
     public:
         int const& boundRight = _boundRight;
         int const& boundBottom = _boundBottom;
@@ -52,23 +70,34 @@ class TFrame : public TBasis {
         int const& x = _x;
         int const& y = _y;
 
-        TFrame(TObject* baseObject = 0,
-               unsigned orderSize = DEFAULT_ORDER_SIZE,
-               int boundRight = DEFAULT_BOUND_RIGHT,
-               int boundBottom = DEFAULT_BOUND_BOTTOM,
-               int startX = DEFAULT_START_X,
-               int startY = DEFAULT_START_Y);
+        TFrame(CFRAME_DEFS);
 
         virtual void setX(int x);
         virtual void setY(int y);
 };
 
+inline TFrame::TFrame(IM_ARGS(CFRAME_ARGS)) : TBasis(IM_VALS(CBASIS_VALS)) {
+    _boundRight = boundRight;
+    _boundBottom = boundBottom;
+
+    _x = startX;
+    _y = startY;
+};
+
+inline TFrame::TFrame(CFRAME_ARGS) : TFrame(IM_VALS(CFRAME_VALS)) {
+};
+
+inline void TFrame::update() {
 }
 
-#undef DEFAULT_ORDER_SIZE
-#undef DEFAULT_BOUND_RIGHT
-#undef DEFAULT_BOUND_BOTTOM
-#undef DEFAULT_START_X
-#undef DEFAULT_START_Y
+inline void TFrame::setX(int x) {
+    _x = x;
+}
+
+inline void TFrame::setY(int y) {
+    _y = y;
+}
+
+}
 
 #endif // KENG_OBJ_TYPES_FRAME_HPP_INCLUDED

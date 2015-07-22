@@ -16,19 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "background.hpp"
-#include <gl/gl.h>
+#include "frame.hpp"
 
 using namespace Keng;
 
-TBackground::TBackground(TObject* baseObject, unsigned orderIndex) :
-                         TComponent(baseObject, orderIndex) {
-                         initTypeIndex(OBJECT_TYPE_BACKGROUND);
-}
-
-void TBackground::update() {
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glClearColor(.0f, .0f, .0f, 1.0f);
-}

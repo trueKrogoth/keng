@@ -21,9 +21,10 @@
 
 using namespace Keng;
 
-///TObject
+//  _____________________
+///[_______TObject_______]
 
-TObject::TObject(bool passFlag) : _typeIndex(-1), _passFlag(passFlag) {
+TObject::TObject(unsigned typeIndex, bool passFlag) : _typeIndex(typeIndex), _passFlag(passFlag) {
 }
 
 TObject::~TObject() {
@@ -31,9 +32,10 @@ TObject::~TObject() {
         subObject->loopDelete();
 }
 
-///TBasis
+//  ____________________
+///[_______TBasis_______]
 
-TBasis::TBasis(TObject* baseObject, unsigned orderSize) : TObject(false) {
+TBasis::TBasis(int dummy, unsigned typeIndex, TObject* baseObject, unsigned orderSize) : TObject(typeIndex, false) {
     _prevObject = this;
     _nextObject = this;
     _subObject = 0;
@@ -46,7 +48,7 @@ TBasis::TBasis(TObject* baseObject, unsigned orderSize) : TObject(false) {
     _orderSize = orderSize;
 
     orderComponent = new TComponent*[orderSize];
-    for (int i = 0; i != orderSize; i++)
+    for (unsigned i = 0; i != orderSize; i++)
         orderComponent[i] = 0;
 }
 
@@ -62,7 +64,7 @@ void TBasis::remove() {
 TObject* TBasis::getPosition(unsigned orderIndex) {
 #if SAFE_MODE
     if (orderIndex >= orderSize) {
-        ShowMessage("ERROR! An object has too high order index.");
+        ShowMessage("ERROR! An object has too large order index.");
         orderIndex = orderSize - 1;
     }
 #endif
@@ -74,15 +76,16 @@ TObject* TBasis::getPosition(unsigned orderIndex) {
     return orderComponent[orderIndex];
 }
 
-///TComponent
+//  ________________________
+///[_______TComponent_______]
 
-TComponent::TComponent(TObject * baseObject, unsigned orderIndex) : TObject(true) {
+TComponent::TComponent(int dummy, unsigned typeIndex, TObject * baseObject, unsigned orderIndex) : TObject(typeIndex, true) {
     _orderIndex = orderIndex;
 
     this->_baseObject = baseObject;
 #if SAFE_MODE
     if (baseObject == 0) {
-        ShowMessage("WARNING! Created a component with no basis.");
+        ShowMessage("WARNING! Created a component at no basis.");
         _prevObject = this;
         _nextObject = this;
     }

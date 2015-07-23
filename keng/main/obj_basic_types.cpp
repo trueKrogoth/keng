@@ -23,7 +23,7 @@ using namespace Keng;
 //  ________________________
 ///[_______TComponent_______]
 
-TComponent::TComponent(bool __dummy,
+TComponent::TComponent(
     unsigned typeIndex,
     TBasis* base,
     unsigned orderIndex)
@@ -41,13 +41,11 @@ TComponent::TComponent(bool __dummy,
 TComponent::TComponent(
     TBasis* base,
     unsigned orderIndex)
-:   TComponent(false, 0,
+:   TComponent(
+    0,
     base,
     orderIndex)
 {
-}
-
-TComponent::~TComponent() {
 }
 
 void TComponent::update() {
@@ -56,23 +54,28 @@ void TComponent::update() {
 void TComponent::remove() {
     if (base != 0) {
         if (base->order_component[orderIndex] == this) {
-            if (static_cast<TComponent&>(*--iterator).orderIndex == orderIndex)
-                base->order_component[orderIndex] = &(static_cast<TComponent&>(*iterator++));
+            --iterator;
+            if (static_cast<TComponent&>(*iterator).orderIndex == orderIndex)
+                base->order_component[orderIndex] = &(static_cast<TComponent&>(*iterator));
             else
                 base->order_component[orderIndex] = 0;
+            ++iterator;
         }
         base->component_list.erase(++iterator);
     }
 }
 
+TComponent::~TComponent() {
+}
+
 //  ____________________
 ///[_______TBasis_______]
 
-TBasis::TBasis(bool __dummy,
+TBasis::TBasis(
     unsigned typeIndex,
     TBasis* base,
     unsigned orderIndex)
-:   TComponent(__dummy,
+:   TComponent(
     typeIndex,
     base,
     orderIndex),
@@ -83,19 +86,18 @@ TBasis::TBasis(bool __dummy,
 TBasis::TBasis(
     TBasis* base,
     unsigned orderIndex)
-:   TBasis(false, 0,
+:   TBasis(
+    0,
     base,
     orderIndex)
 {
 }
 
-TBasis::~TBasis() {
-}
-
 void TBasis::insert(TComponent* component) {
-    for (int i = component->orderIndex; i != 0; i--)
+    for (int i = component->orderIndex; i != 0; --i)
         if (order_component[i] != 0) {
-            component->iterator = component_list.insert(++order_component[i]->iterator--, *component);
+            std::list<TComponent>::iterator temp_iterator = order_component[i]->iterator;
+            component->iterator = component_list.insert(++temp_iterator, *component);
             order_component[i] = component;
             return;
         }
@@ -105,12 +107,15 @@ void TBasis::insert(TComponent* component) {
 }
 
 void TBasis::update() {
-    for (std::list<TComponent>::iterator i = component_list.begin(); i != component_list.end(); i++)
-        i->update();
+    for (TComponent& component : component_list)
+        component.update();
 }
 
 void TBasis::remove() {
     component_list.clear();
     if (base != 0)
         base->component_list.erase(++iterator);
+}
+
+TBasis::~TBasis() {
 }

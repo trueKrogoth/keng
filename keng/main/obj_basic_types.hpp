@@ -39,7 +39,7 @@ class TComponent {
         unsigned _orderIndex;
 
     protected:
-        TComponent(bool __dummy,
+        TComponent(
             unsigned typeIndex,
             TBasis* base,
             unsigned orderIndex);
@@ -53,11 +53,11 @@ class TComponent {
         TBasis* const& base = _base;
         unsigned const& orderIndex = _orderIndex;
 
-        virtual ~TComponent();
-
         virtual void update();
 
         virtual void remove();
+
+        virtual ~TComponent();
 };
 
 //  ____________________
@@ -73,7 +73,7 @@ class TBasis : public TComponent {
         void insert(TComponent* component);
 
     protected:
-        TBasis(bool __dummy,
+        TBasis(
             unsigned typeIndex,
             TBasis* base,
             unsigned orderIndex);
@@ -83,11 +83,11 @@ class TBasis : public TComponent {
             TBasis* base = 0,
             unsigned orderIndex = 0);
 
-        virtual ~TBasis();
-
         virtual void update();
 
         virtual void remove();
+
+        virtual ~TBasis();
 };
 
 }

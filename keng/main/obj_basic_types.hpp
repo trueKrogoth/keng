@@ -19,143 +19,76 @@
 #ifndef KENG_MAIN_BASIC_TYPES_HPP_INCLUDED
 #define KENG_MAIN_BASIC_TYPES_HPP_INCLUDED
 
-#include "../support/error.hpp"
+#include <list>
+#include <vector>
 
 namespace Keng {
-
-//  _____________________
-///[_______TObject_______]
-
-class TObject {
-    friend class TBasis;
-    friend class TComponent;
-
-    private:
-        unsigned _typeIndex;
-
-        bool _passFlag;
-
-        TObject* _prevObject;
-        TObject* _nextObject;
-        TObject* _baseObject;
-        TObject* _subObject;
-
-        void loopUpdate();
-        void loopDelete();
-
-        virtual void update() = 0;
-
-        unsigned _orderIndex; //little optimization rudiment
-
-    protected:
-        TObject(unsigned typeIndex, bool passFlag);
-
-    public:
-        unsigned const& typeIndex = _typeIndex;
-
-        bool const& passFlag = _passFlag;
-
-        TObject* const& prevObject = _prevObject;
-        TObject* const& nextObject = _nextObject;
-        TObject* const& baseObject = _baseObject;
-        TObject* const& subObject = _subObject;
-
-        virtual ~TObject();
-
-        virtual void remove() = 0;
-};
-
-inline void TObject::loopUpdate() {
-    update();
-    if (subObject != 0)
-        subObject->loopUpdate();
-    if (nextObject->passFlag)
-        nextObject->loopUpdate();
-}
-
-inline void TObject::loopDelete() {
-    if (nextObject->passFlag)
-        nextObject->loopDelete();
-    delete this;
-}
-
-//  ____________________
-///[_______TBasis_______]
-
-class TComponent;
-class TBasis : public TObject {
-    friend class TObject;
-    friend class TComponent;
-
-    private:
-        unsigned _orderSize;
-
-        TComponent* * orderComponent;
-
-        TObject* getPosition(unsigned orderIndex);
-
-        virtual void update() = 0;
-
-    protected:
-        TBasis(bool __dummy, unsigned __typeIndex, TObject* baseObject, unsigned orderSize);
-
-    public:
-        unsigned const& orderSize = _orderSize;
-
-        virtual ~TBasis();
-
-        void updateAll();
-        void remove();
-};
-
-inline void TBasis::updateAll() {
-    loopUpdate();
-}
-
-#define CBASIS_VALS\
-        baseObject,\
-        orderSize
-#define BBASIS static_cast<TBasis*>(baseObject)
 
 //  ________________________
 ///[_______TComponent_______]
 
-class TComponent : public TObject {
-    friend class TObject;
+class TBasis;
+class TComponent {
     friend class TBasis;
 
     private:
-        //unsigned _orderIndex;
+        std::list<TComponent>::iterator iterator;
 
-        virtual void update() = 0;
+        unsigned _typeIndex;
+        TBasis* _base;
+        unsigned _orderIndex;
 
     protected:
-        TComponent(bool __dummy, unsigned __typeIndex, TObject* baseObject/*!= 0*/, unsigned orderIndex);
+        TComponent(bool __dummy,
+            unsigned typeIndex,
+            TBasis* base,
+            unsigned orderIndex);
 
     public:
+        TComponent(
+            TBasis* base = 0,
+            unsigned orderIndex = 0);
+
+        unsigned const& typeIndex = _typeIndex;
+        TBasis* const& base = _base;
         unsigned const& orderIndex = _orderIndex;
 
         virtual ~TComponent();
 
-        void remove();
+        virtual void update();
+
+        virtual void remove();
 };
 
-#define CCOMPONENT_VALS\
-        baseObject,\
-        orderIndex
+//  ____________________
+///[_______TBasis_______]
 
-//  ______________________________
-///[_______IM_ARGS,_IM_VALS_______]
+class TBasis : public TComponent {
+    friend class TComponent;
 
-#define IM_ARGS(ARGS)\
-        bool __dummy,\
-        unsigned __typeIndex,\
-        ARGS
+    private:
+        std::list<TComponent> component_list;
+        std::vector<TComponent*> order_component;
 
-#define IM_VALS(VALS)\
-        false,\
-        UNIQUE_OBJ_TYPE_INDEX,\
-        VALS
+        void insert(TComponent* component);
+
+    protected:
+        TBasis(bool __dummy,
+            unsigned typeIndex,
+            TBasis* base,
+            unsigned orderIndex);
+
+    public:
+        TBasis(
+            TBasis* base = 0,
+            unsigned orderIndex = 0);
+
+        virtual ~TBasis();
+
+        virtual void update();
+
+        virtual void remove();
+};
 
 }
 

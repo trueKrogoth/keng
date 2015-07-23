@@ -17,106 +17,100 @@
  */
 
 #include "obj_basic_types.hpp"
-#include "obj_type_index.hpp"
 
 using namespace Keng;
-
-//  _____________________
-///[_______TObject_______]
-
-TObject::TObject(unsigned typeIndex, bool passFlag) : _typeIndex(typeIndex), _passFlag(passFlag) {
-}
-
-TObject::~TObject() {
-    if (subObject != 0)
-        subObject->loopDelete();
-}
-
-//  ____________________
-///[_______TBasis_______]
-
-TBasis::TBasis(bool __dummy, unsigned __typeIndex, TObject* baseObject, unsigned orderSize) : TObject(__typeIndex, false) {
-    _prevObject = this;
-    _nextObject = this;
-    _subObject = 0;
-    _baseObject = baseObject;
-    if (baseObject != 0)
-        baseObject->_subObject = this;
-
-    _orderIndex = -1;
-
-    _orderSize = orderSize;
-
-    orderComponent = new TComponent*[orderSize];
-    for (unsigned i = 0; i != orderSize; i++)
-        orderComponent[i] = 0;
-}
-
-TBasis::~TBasis() {
-}
-
-void TBasis::remove() {
-    if (baseObject != 0)
-        baseObject->_subObject = 0;
-    loopDelete();
-}
-
-TObject* TBasis::getPosition(unsigned orderIndex) {
-#if SAFE_MODE
-    if (orderIndex >= orderSize) {
-        ShowMessage("ERROR! An object has too large order index.");
-        orderIndex = orderSize - 1;
-    }
-#endif
-    while (orderComponent[orderIndex] == 0) {
-        if (orderIndex == 0)
-            return this;
-        orderIndex--;
-    }
-    return orderComponent[orderIndex];
-}
 
 //  ________________________
 ///[_______TComponent_______]
 
-TComponent::TComponent(bool __dummy, unsigned __typeIndex, TObject * baseObject, unsigned orderIndex) : TObject(__typeIndex, true) {
-    _orderIndex = orderIndex;
+TComponent::TComponent(bool __dummy,
+    unsigned typeIndex,
+    TBasis* base,
+    unsigned orderIndex)
+:   _typeIndex(typeIndex),
+    _base(base),
+    _orderIndex(orderIndex)
+{
+    if (base != 0) {
+        if (orderIndex >= base->order_component.size())
+            base->order_component.resize(orderIndex + 1);
+        base->insert(this);
+    }
+}
 
-    _baseObject = baseObject;
-#if SAFE_MODE
-    if (baseObject == 0) {
-        ShowMessage("WARNING! Created a component at no basis.");
-        _prevObject = this;
-        _nextObject = this;
-    }
-    else
-#endif
-    {
-        _prevObject = static_cast<TBasis*>(baseObject)->getPosition(orderIndex);
-        static_cast<TBasis*>(baseObject)->orderComponent[orderIndex] = this;
-        _nextObject = prevObject->nextObject;
-        prevObject->_nextObject = this;
-        nextObject->_prevObject = this;
-    }
-    _subObject = 0;
+TComponent::TComponent(
+    TBasis* base,
+    unsigned orderIndex)
+:   TComponent(false, 0,
+    base,
+    orderIndex)
+{
 }
 
 TComponent::~TComponent() {
 }
 
+void TComponent::update() {
+}
+
 void TComponent::remove() {
-    prevObject->_nextObject = nextObject;
-    nextObject->_prevObject = prevObject;
-
-#if SAFE_MODE
-    if (baseObject != 0)
-#endif
-    if (static_cast<TBasis*>(baseObject)->orderComponent[orderIndex] == this) {
-        if (prevObject->_orderIndex == orderIndex)
-            static_cast<TBasis*>(baseObject)->orderComponent[orderIndex] = static_cast<TComponent*>(prevObject);
-        else
-            static_cast<TBasis*>(baseObject)->orderComponent[orderIndex] = 0;
+    if (base != 0) {
+        if (base->order_component[orderIndex] == this) {
+            if (static_cast<TComponent&>(*--iterator).orderIndex == orderIndex)
+                base->order_component[orderIndex] = &(static_cast<TComponent&>(*iterator++));
+            else
+                base->order_component[orderIndex] = 0;
+        }
+        base->component_list.erase(++iterator);
     }
+}
 
-    delete this;
+//  ____________________
+///[_______TBasis_______]
+
+TBasis::TBasis(bool __dummy,
+    unsigned typeIndex,
+    TBasis* base,
+    unsigned orderIndex)
+:   TComponent(__dummy,
+    typeIndex,
+    base,
+    orderIndex),
+    order_component(15)
+{
+}
+
+TBasis::TBasis(
+    TBasis* base,
+    unsigned orderIndex)
+:   TBasis(false, 0,
+    base,
+    orderIndex)
+{
+}
+
+TBasis::~TBasis() {
+}
+
+void TBasis::insert(TComponent* component) {
+    for (int i = component->orderIndex; i != 0; i--)
+        if (order_component[i] != 0) {
+            component->iterator = component_list.insert(++order_component[i]->iterator--, *component);
+            order_component[i] = component;
+            return;
+        }
+    order_component[0] = component;
+    component_list.push_front(*component);
+    component->iterator = component_list.begin();
+}
+
+void TBasis::update() {
+    for (std::list<TComponent>::iterator i = component_list.begin(); i != component_list.end(); i++)
+        i->update();
+}
+
+void TBasis::remove() {
+    component_list.clear();
+    if (base != 0)
+        base->component_list.erase(++iterator);
 }

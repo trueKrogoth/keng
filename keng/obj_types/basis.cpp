@@ -16,42 +16,49 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "component.hpp"
 #include "basis.hpp"
 
 using namespace Keng;
 
-TComponent::TComponent(
+///void TBasis_tools::insert(TComponent* component) {...} - basis.hh
+
+///void TBasis_tools::erase(TComponent* component) {...} - basis.hh
+
+TBasis::TBasis(
     unsigned typeIndex,
     TBasis* base,
     unsigned orderIndex)
-:   _typeIndex(typeIndex),
-    _base(base),
-    _orderIndex(orderIndex)
+:   TComponent(
+    typeIndex,
+    base,
+    orderIndex),
+    back_component(15)
 {
-    if (base != 0)
-        base->insert(this);
 }
 
-TComponent::TComponent(
+TBasis::TBasis(
     TBasis* base,
     unsigned orderIndex)
-:   TComponent(
-    TCOMPONENT_INDEX,
+:   TBasis(
+    TBASIS_INDEX,
     base,
     orderIndex)
 {
 }
 
-TComponent::~TComponent() {
+TBasis::~TBasis() {
 }
 
-void TComponent::update() {
+void TBasis::update() {
+    for (TComponent& component : component_list)
+        component.update();
 }
 
-void TComponent::remove() {
-    if (base != 0)
-        base->erase(this);
-    else
-        delete this;
+void TBasis::remove() {
+    component_list.clear();
+    TComponent::remove();
 }
+
+///void TBasis::insert_impl(TComponent* component) {...} - basis.hh
+
+///void TBasis::erase_impl(TComponent* component) {...} - basis.hh

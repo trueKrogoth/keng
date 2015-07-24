@@ -16,61 +16,59 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KENG_MAIN_BASIS_HPP_INCLUDED
-#define KENG_MAIN_BASIS_HPP_INCLUDED
+#ifndef KENG_OBJ_TYPES_COMPONENT_HPP_INCLUDED
+#define KENG_OBJ_TYPES_COMPONENT_HPP_INCLUDED
 
-#include "component.hpp"
 #include <list>
-#include <vector>
-#include "obj_type_index.hpp"
+#include "../main/obj_type_index.hpp"
 
-#define TBASIS_INDEX UNIQUE_OBJ_TYPE_INDEX
+#define TCOMPONENT_INDEX UNIQUE_OBJ_TYPE_INDEX
 
 namespace Keng {
 
 //~~~~~~~~~~~~~~~~~
-/// Tools
+/// Iterator
 //~~~~~~~~~~~~~~~~~
-class TBasis_tools {
-    friend class TComponent;
+class TComponent;
+class TComponent_iterator {
+    friend class TBasis;
 
     private:
-        void insert(TComponent* component);
-        void erase(TComponent* component);
+        std::list<TComponent>::iterator iterator;
 };
 //~~~~~~~~~~~~~~~~~
 /// Main
 //~~~~~~~~~~~~~~~~~
-class TBasis:
-    public TComponent,
-    public TBasis_tools
+class TBasis;
+class TComponent :
+    public TComponent_iterator
 {
-    friend class TBasis_tools;
-
     public:
-        TBasis(
+        unsigned const& typeIndex = _typeIndex;
+        TBasis* const& base = _base;
+        unsigned const& orderIndex = _orderIndex;
+
+        TComponent(
             TBasis* base = 0,
             unsigned orderIndex = 0);
 
-        virtual ~TBasis();
+        virtual ~TComponent();
 
         virtual void update();
         virtual void remove();
 
     protected:
-        TBasis(
+        TComponent(
             unsigned typeIndex,
             TBasis* base,
             unsigned orderIndex);
 
     private:
-        std::list<TComponent> component_list;
-        std::vector<TComponent*> back_component;
-
-        inline void insert_impl(TComponent* component);
-        inline void erase_impl(TComponent* component);
+        unsigned _typeIndex;
+        TBasis* _base;
+        unsigned _orderIndex;
 };
 
 }
 
-#endif // KENG_MAIN_BASIS_HPP_INCLUDED
+#endif // KENG_OBJ_TYPES_COMPONENT_HPP_INCLUDED

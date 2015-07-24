@@ -16,54 +16,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef KENG_OBJ_TYPES_BASIS_HH_INCLUDED
+#define KENG_OBJ_TYPES_BASIS_HH_INCLUDED
+
 #include "basis.hpp"
 
-using namespace Keng;
+namespace Keng {
 
-void TBasis_tools::insert(TComponent* component) {
-    static_cast<TBasis*>(this)->insert_impl(component);
-}
-
-void TBasis_tools::erase(TComponent* component) {
-    static_cast<TBasis*>(this)->erase_impl(component);
-}
-
-TBasis::TBasis(
-    unsigned typeIndex,
-    TBasis* base,
-    unsigned orderIndex)
-:   TComponent(
-    typeIndex,
-    base,
-    orderIndex),
-    back_component(15)
-{
-}
-
-TBasis::TBasis(
-    TBasis* base,
-    unsigned orderIndex)
-:   TBasis(
-    TBASIS_INDEX,
-    base,
-    orderIndex)
-{
-}
-
-TBasis::~TBasis() {
-}
-
-void TBasis::update() {
-    for (TComponent& component : component_list)
-        component.update();
-}
-
-void TBasis::remove() {
-    component_list.clear();
-    TComponent::remove();
-}
-
-void TBasis::insert_impl(TComponent* component) {
+inline void TBasis::insert_impl(TComponent* component) {
     if (component->orderIndex >= back_component.size())
         back_component.resize(component->orderIndex + 1);
     for (int i = component->orderIndex; i != -1; --i)
@@ -78,7 +38,7 @@ void TBasis::insert_impl(TComponent* component) {
     component->iterator = component_list.begin();
 }
 
-void TBasis::erase_impl(TComponent* component) {
+inline void TBasis::erase_impl(TComponent* component) {
     if (back_component[component->orderIndex] == component) {
         --component->iterator;
         if (static_cast<TComponent&>(*component->iterator).orderIndex == component->orderIndex)
@@ -89,3 +49,15 @@ void TBasis::erase_impl(TComponent* component) {
     }
     component_list.erase(++component->iterator);
 }
+
+inline void TBasis_tools::insert(TComponent* component) {
+    static_cast<TBasis*>(this)->insert_impl(component);
+}
+
+inline void TBasis_tools::erase(TComponent* component) {
+    static_cast<TBasis*>(this)->erase_impl(component);
+}
+
+}
+
+#endif // KENG_OBJ_TYPES_BASIS_HH_INCLUDED

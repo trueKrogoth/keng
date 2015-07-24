@@ -16,17 +16,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-# ifndef KENG_MAIN_TYPE_INDEX_HPP_INCLUDED
-# define KENG_MAIN_TYPE_INDEX_HPP_INCLUDED
-#     include <boost/preprocessor/arithmetic/inc.hpp>
-#     include <boost/preprocessor/slot/slot.hpp>
-#     define BOOST_PP_VALUE 0
-#     include BOOST_PP_ASSIGN_SLOT(1)
-#     undef BOOST_PP_VALUE
-#     define UNIQUE_OBJ_TYPE_INDEX BOOST_PP_SLOT(1)
-#     define OBJ_TYPE_COUNT BOOST_PP_SLOT(1)
-# else
-#     define BOOST_PP_VALUE BOOST_PP_INC(BOOST_PP_SLOT(1))
-#     include BOOST_PP_ASSIGN_SLOT(1)
-#     undef BOOST_PP_VALUE
-# endif
+#include "component.hpp"
+#include "basis.hh"
+
+using namespace Keng;
+
+TComponent::TComponent(
+    unsigned typeIndex,
+    TBasis* base,
+    unsigned orderIndex)
+:   _typeIndex(typeIndex),
+    _base(base),
+    _orderIndex(orderIndex)
+{
+    if (base != 0)
+        base->insert(this);
+}
+
+TComponent::TComponent(
+    TBasis* base,
+    unsigned orderIndex)
+:   TComponent(
+    TCOMPONENT_INDEX,
+    base,
+    orderIndex)
+{
+}
+
+TComponent::~TComponent() {
+}
+
+void TComponent::update() {
+}
+
+void TComponent::remove() {
+    if (base != 0)
+        base->erase(this);
+    else
+        delete this;
+}

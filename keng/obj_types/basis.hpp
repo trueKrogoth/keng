@@ -22,9 +22,9 @@
 #include "component.hpp"
 #include <list>
 #include <vector>
-#include "../main/obj_type_index.hpp"
+#include "../main/obj_type_id.hh"
 
-#define TBASIS_INDEX UNIQUE_OBJ_TYPE_INDEX
+#define TBASIS UNIQUE_OBJ_TYPE_ID
 
 namespace Keng {
 
@@ -50,21 +50,20 @@ class TBasis:
     public:
         TBasis(
             TBasis* base = 0,
-            unsigned orderIndex = 0);
+            unsigned position = 0);
 
         virtual ~TBasis();
 
         virtual void update();
-        virtual void remove();
 
     protected:
         TBasis(
-            unsigned typeIndex,
+            unsigned typeId,
             TBasis* base,
-            unsigned orderIndex);
+            unsigned position);
 
     private:
-        std::list<TComponent> component_list;
+        std::list<TComponent*> component_list;
         std::vector<TComponent*> back_component;
 
         void insert_impl(TComponent* component);

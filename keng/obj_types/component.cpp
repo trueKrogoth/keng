@@ -22,12 +22,12 @@
 using namespace Keng;
 
 TComponent::TComponent(
-    unsigned typeIndex,
+    unsigned typeId,
     TBasis* base,
-    unsigned orderIndex)
-:   _typeIndex(typeIndex),
+    unsigned position)
+:   _typeId(typeId),
     _base(base),
-    _orderIndex(orderIndex)
+    _position(position)
 {
     if (base != 0)
         base->insert(this);
@@ -35,23 +35,18 @@ TComponent::TComponent(
 
 TComponent::TComponent(
     TBasis* base,
-    unsigned orderIndex)
+    unsigned position)
 :   TComponent(
-    TCOMPONENT_INDEX,
+    TCOMPONENT,
     base,
-    orderIndex)
+    position)
 {
 }
 
 TComponent::~TComponent() {
+    if (base != 0)
+        base->erase(this);
 }
 
 void TComponent::update() {
-}
-
-void TComponent::remove() {
-    if (base != 0)
-        base->erase(this);
-    else
-        delete this;
 }

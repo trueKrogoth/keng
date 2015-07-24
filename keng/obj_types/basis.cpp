@@ -18,6 +18,8 @@
 
 #include "basis.hpp"
 
+#include "background.hpp"
+
 using namespace Keng;
 
 ///void TBasis_tools::insert(TComponent* component) {...} - basis.hh
@@ -25,38 +27,35 @@ using namespace Keng;
 ///void TBasis_tools::erase(TComponent* component) {...} - basis.hh
 
 TBasis::TBasis(
-    unsigned typeIndex,
+    unsigned typeId,
     TBasis* base,
-    unsigned orderIndex)
+    unsigned position)
 :   TComponent(
-    typeIndex,
+    typeId,
     base,
-    orderIndex),
+    position),
     back_component(15)
 {
 }
 
 TBasis::TBasis(
     TBasis* base,
-    unsigned orderIndex)
+    unsigned position)
 :   TBasis(
-    TBASIS_INDEX,
+    TBASIS,
     base,
-    orderIndex)
+    position)
 {
 }
 
 TBasis::~TBasis() {
+    for (TComponent*& component : component_list)
+        delete component;
 }
 
 void TBasis::update() {
-    for (TComponent& component : component_list)
-        component.update();
-}
-
-void TBasis::remove() {
-    component_list.clear();
-    TComponent::remove();
+    for (TComponent*& component : component_list)
+        component->update();
 }
 
 ///void TBasis::insert_impl(TComponent* component) {...} - basis.hh

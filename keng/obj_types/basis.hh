@@ -24,27 +24,27 @@
 namespace Keng {
 
 inline void TBasis::insert_impl(TComponent* component) {
-    if (component->orderIndex >= back_component.size())
-        back_component.resize(component->orderIndex + 1);
-    for (int i = component->orderIndex; i != -1; --i)
+    if (component->position >= back_component.size())
+        back_component.resize(component->position + 1);
+    for (int i = component->position; i != -1; --i)
         if (back_component[i] != 0) {
-            std::list<TComponent>::iterator temp_iterator = back_component[i]->iterator;
-            component->iterator = component_list.insert(++temp_iterator, *component);
+            std::list<TComponent*>::iterator temp_iterator = back_component[i]->iterator;
+            component->iterator = component_list.insert(++temp_iterator, component);
             back_component[i] = component;
             return;
         }
     back_component[0] = component;
-    component_list.push_front(*component);
+    component_list.push_front(component);
     component->iterator = component_list.begin();
 }
 
 inline void TBasis::erase_impl(TComponent* component) {
-    if (back_component[component->orderIndex] == component) {
+    if (back_component[component->position] == component) {
         --component->iterator;
-        if (static_cast<TComponent&>(*component->iterator).orderIndex == component->orderIndex)
-            back_component[component->orderIndex] = &(static_cast<TComponent&>(*component->iterator));
+        if (static_cast<TComponent*>(*component->iterator)->position == component->position)
+            back_component[component->position] = static_cast<TComponent*>(*component->iterator);
         else
-            back_component[component->orderIndex] = 0;
+            back_component[component->position] = 0;
         ++component->iterator;
     }
     component_list.erase(++component->iterator);

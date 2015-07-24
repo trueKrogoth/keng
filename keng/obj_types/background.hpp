@@ -16,59 +16,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KENG_OBJ_TYPES_COMPONENT_HPP_INCLUDED
-#define KENG_OBJ_TYPES_COMPONENT_HPP_INCLUDED
+#ifndef KENG_OBJ_TYPES_BACKGROUND_HPP_INCLUDED
+#define KENG_OBJ_TYPES_BACKGROUND_HPP_INCLUDED
 
-#include <list>
-#include <memory>
+#include "basis.hpp"
 #include "../main/obj_type_id.hh"
 
-#define TCOMPONENT UNIQUE_OBJ_TYPE_ID
+#define TBACKGROUND UNIQUE_OBJ_TYPE_ID
 
 namespace Keng {
 
 //~~~~~~~~~~~~~~~~~
-/// Iterator
-//~~~~~~~~~~~~~~~~~
-class TComponent;
-class TComponent_iterator {
-    friend class TBasis;
-
-    private:
-        std::list<TComponent*>::iterator iterator;
-};
-//~~~~~~~~~~~~~~~~~
 /// Main
 //~~~~~~~~~~~~~~~~~
-class TBasis;
-class TComponent :
-    public TComponent_iterator
+class TBackground :
+    public TComponent
 {
     public:
-        unsigned const& typeId = _typeId;
-        TBasis* const& base = _base;
-        unsigned const& position = _position;
-
-        TComponent(
+        TBackground(
             TBasis* base = 0,
             unsigned position = 0);
 
-        virtual ~TComponent();
-
-        virtual void update();
+        void update();
 
     protected:
-        TComponent(
+        TBackground(
             unsigned typeId,
             TBasis* base,
             unsigned position);
-
-    private:
-        unsigned _typeId;
-        TBasis* _base;
-        unsigned _position;
 };
 
 }
 
-#endif // KENG_OBJ_TYPES_COMPONENT_HPP_INCLUDED
+#endif // KENG_OBJ_TYPES_BACKGROUND_HPP_INCLUDED

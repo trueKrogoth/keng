@@ -16,80 +16,57 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef KENG_MAIN_BASIC_TYPES_HPP_INCLUDED
-#define KENG_MAIN_BASIC_TYPES_HPP_INCLUDED
+#ifndef KENG_MAIN_COMPONENT_HPP_INCLUDED
+#define KENG_MAIN_COMPONENT_HPP_INCLUDED
 
 #include <list>
-#include <vector>
+#include "obj_type_index.hpp"
+
+#define TCOMPONENT_INDEX UNIQUE_OBJ_TYPE_INDEX
 
 namespace Keng {
 
-//  ________________________
-///[_______TComponent_______]
-
-class TBasis;
-class TComponent {
+//~~~~~~~~~~~~~~~~~
+/// Iterator
+//~~~~~~~~~~~~~~~~~
+class TComponent;
+class TComponent_iterator {
     friend class TBasis;
 
     private:
         std::list<TComponent>::iterator iterator;
-
-        unsigned _typeIndex;
-        TBasis* _base;
-        unsigned _orderIndex;
-
-    protected:
-        TComponent(
-            unsigned typeIndex,
-            TBasis* base,
-            unsigned orderIndex);
-
+};
+//~~~~~~~~~~~~~~~~~
+/// Main
+//~~~~~~~~~~~~~~~~~
+class TBasis;
+class TComponent : public TComponent_iterator {
     public:
-        TComponent(
-            TBasis* base = 0,
-            unsigned orderIndex = 0);
-
         unsigned const& typeIndex = _typeIndex;
         TBasis* const& base = _base;
         unsigned const& orderIndex = _orderIndex;
 
-        virtual void update();
-
-        virtual void remove();
+        TComponent(
+            TBasis* base = 0,
+            unsigned orderIndex = 0);
 
         virtual ~TComponent();
-};
 
-//  ____________________
-///[_______TBasis_______]
-
-class TBasis : public TComponent {
-    friend class TComponent;
-
-    private:
-        std::list<TComponent> component_list;
-        std::vector<TComponent*> order_component;
-
-        void insert(TComponent* component);
+        virtual void update();
+        virtual void remove();
 
     protected:
-        TBasis(
+        TComponent(
             unsigned typeIndex,
             TBasis* base,
             unsigned orderIndex);
 
-    public:
-        TBasis(
-            TBasis* base = 0,
-            unsigned orderIndex = 0);
-
-        virtual void update();
-
-        virtual void remove();
-
-        virtual ~TBasis();
+    private:
+        unsigned _typeIndex;
+        TBasis* _base;
+        unsigned _orderIndex;
 };
 
 }
 
-#endif // KENG_MAIN_BASIC_TYPES_HPP_INCLUDED
+#endif // KENG_MAIN_COMPONENT_HPP_INCLUDED
